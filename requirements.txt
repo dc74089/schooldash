@@ -1,0 +1,4 @@
+canvasapi==3.2.0
+canvaslms==4.0
+Django==4.2.13
+requests==2.31.0

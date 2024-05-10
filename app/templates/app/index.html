@@ -84,12 +84,7 @@
           font-weight: bold;
       }
 
-      .schedule tr th {
-          background-color: transparent;
-          color: white;
-      }
-
-      .todo tr th {
+      .table tr th, .table tr td {
           background-color: transparent;
           color: white;
       }
@@ -236,6 +231,15 @@
         <div class="card dark darkable">
           <div class="card-body">
             <h2>Notifications</h2>
+            <hr/>
+            <table class="table">
+              <tr>
+                <td><a href="#">Unit 3 Test</a> was graded</td>
+              </tr>
+              <tr>
+                <td><a href="#">Site 2.2: Make Me Something</a> is missing</td>
+              </tr>
+            </table>
           </div>
         </div>
       </div>
@@ -253,6 +257,30 @@
                 </th>
               </tr>
             </table>
+          </div>
+        </div>
+        <div class="card dark darkable">
+          <div class="card-body">
+            <h2>Grades</h2>
+            <hr/>
+            <details>
+              <summary>Click Here to Reveal</summary>
+              <br/>
+              <table class="table todo">
+                <tr>
+                  <th>Computer Science</th>
+                  <th>96% (A)</th>
+                </tr>
+                <tr>
+                  <th>Math</th>
+                  <th>86% (B)</th>
+                </tr>
+                <tr>
+                  <th>Science</th>
+                  <th>94% (A)</th>
+                </tr>
+              </table>
+            </details>
           </div>
         </div>
       </div>

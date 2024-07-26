@@ -1,7 +1,7 @@
 import re
 
 import requests
-from dateutil.parser import parser
+from dateutil.parser import parse
 
 
 def get_name(request, course_id):
@@ -31,7 +31,7 @@ def get_todo(request):
     resp = resp.json()
 
     for item in resp:
-        item['assignment']['due_at'] = parser.parse(item['assignment']['due_at']).date()
+        item['assignment']['due_at'] = parse(item['assignment']['due_at']).date()
         item['course'] = get_name(request, item['course_id'])
 
     return resp

@@ -51,6 +51,10 @@
           setInterval(function () {
               updateTime()
           }, 100);
+
+          setTimeout(function () {
+              $("#reload_warning").show();
+          }, 60*60*1000)
       })
   </script>
 
@@ -190,21 +194,28 @@
               <span id="hour"></span>:<span id="minute"></span><span style="color: #808080">:<span
                     id="second"></span></span>
             </h1>
+            <div class="alert alert-warning" id="reload_warning" style="display: none;">
+              It's been awhile since you've refreshed. <a href="#" onclick="location.reload()">Click here to fetch the most up-to-date info.</a>
+            </div>
           </div>
         </div>
         {% if canvas_authed %}
           <div class="card dark darkable">
             <div class="card-body">
-              <h2>Notifications</h2>
+              <h2>Canvas Activity Feed</h2>
               <hr/>
               <table class="table">
                 {% for notif in notifications %}
                   <tr>
                     <td>
-                      <details>
-                        <summary><a href="{{ notif.html_url }}" target="_blank">{{ notif.title }}</a></summary>
-                        <p>{{ notif.message | safe }}</p>
-                      </details>
+                      {% if notif.type == "Announcement" %}
+                        <details>
+                          <summary><a href="{{ notif.html_url }}" target="_blank">{{ notif.title }}</a></summary>
+                          <p>{{ notif.message | safe }}</p>
+                        </details>
+                      {% else %}
+                        <a href="{{ notif.html_url }}" target="_blank">{{ notif.title }}</a>
+                      {% endif %}
                     </td>
                   </tr>
                 {% endfor %}
@@ -225,8 +236,8 @@
                     <tr>
                       <th>
                         <h4>{{ item.assignment.name }}</h4>
-                        <h5>{{ item.course }}</h5>
-                        <h6>Due {{ item.assignment.due_at }}</h6>
+                        <h5>Due <b>{{ item.assignment.due_at }}</b></h5>
+                        <h6>{{ item.course }}</h6>
                       </th>
                     </tr>
                   {% endfor %}

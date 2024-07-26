@@ -122,7 +122,8 @@
             <div class="accordion" id="todayAccordion">
               <div class="accordion-item">
                 <h2 class="accordion-header">
-                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                  <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                          data-bs-target="#collapseOne"
                           aria-expanded="true" aria-controls="collapseOne">
                     Bell Schedule
                   </button>
@@ -130,87 +131,50 @@
                 <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
                      data-bs-parent="#todayAccordion">
                   <div class="accordion-body">
-
-                    <table class="table table-bordered schedule">
-                      <tr>
-                        <th>1</th>
-                        <th>8:10 - 8:55</th>
-                      </tr>
-                      <tr>
-                        <th>Fling</th>
-                        <th>8:55 - 9:10</th>
-                      </tr>
-                      <tr>
-                        <th>2</th>
-                        <th>9:15 - 10:00</th>
-                      </tr>
-                      <tr>
-                        <th>3</th>
-                        <th>10:05 - 10:50</th>
-                      </tr>
-                      <tr>
-                        <th>4</th>
-                        <th>10:55 - 11:40</th>
-                      </tr>
-                      <tr>
-                        <th>Lunch</th>
-                        <th>11:40 - 12:20</th>
-                      </tr>
-                      <tr>
-                        <th>5</th>
-                        <th>12:25 - 1:10</th>
-                      </tr>
-                      <tr>
-                        <th>6</th>
-                        <th>1:15 - 2:00</th>
-                      </tr>
-                      <tr>
-                        <th>7</th>
-                        <th>2:05 - 2:50</th>
-                      </tr>
-                    </table>
+                    {% if bells %}
+                      <table class="table table-bordered schedule">
+                        {% for entry in bells %}
+                          <tr>
+                            <th>{{ entry.0 }}</th>
+                            <th>{{ entry.1 }} - {{ entry.2 }}</th>
+                          </tr>
+                        {% endfor %}
+                      </table>
+                    {% else %}
+                      {% if weekend %}
+                        <p>Happy Weekend!</p>
+                      {% else %}
+                        <p>Not available today...</p>
+                        <p>Check the student hub!</p>
+                      {% endif %}
+                    {% endif %}
                   </div>
                 </div>
               </div>
-              <div class="accordion-item">
-                <h2 class="accordion-header" id="headingTwo">
-                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                          data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                    Lunch Menu
-                  </button>
-                </h2>
-                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
-                     data-bs-parent="#todayAccordion">
-                  <div class="accordion-body">
-                    <h5>Soup</h5>
-                    <ul>
-                      <li>Rice Vegetable Soup</li>
-                    </ul>
-                    <h5>Entree</h5>
-                    <ul>
-                      <li>Hoisin Baked Chicken</li>
-                    </ul>
-                    <h5>Vegetarian Entree</h5>
-                    <ul>
-                      <li>Hoisin Baked Tofu</li>
-                    </ul>
-                    <h5>Sides</h5>
-                    <ul>
-                      <li>Lo Mein Noodles</li>
-                      <li>Gingered Carrots</li>
-                    </ul>
-                    <h5>Grill Special</h5>
-                    <ul>
-                      <li>Classic Chicken Sandwich</li>
-                    </ul>
-                    <h5>Dessert</h5>
-                    <ul>
-                      <li>Pineapple Tidbits</li>
-                    </ul>
+              {% if lunch_menu %}
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                      Lunch Menu
+                    </button>
+                  </h2>
+                  <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                       data-bs-parent="#todayAccordion">
+                    <div class="accordion-body">
+                      {% for k, v in lunch_menu.items %}
+                        <h5>{{ k }}</h5>
+                        <ul>
+                          {% for item in v %}
+                            <li>{{ item }}</li>
+                          {% endfor %}
+                        </ul>
+                      {% endfor %}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
+                </div>
+              {% endif %}
           </div>
         </div>
       </div>
@@ -228,61 +192,94 @@
             </h1>
           </div>
         </div>
-        <div class="card dark darkable">
-          <div class="card-body">
-            <h2>Notifications</h2>
-            <hr/>
-            <table class="table">
-              <tr>
-                <td><a href="#">Unit 3 Test</a> was graded</td>
-              </tr>
-              <tr>
-                <td><a href="#">Site 2.2: Make Me Something</a> is missing</td>
-              </tr>
-            </table>
+        {% if canvas_authed %}
+          <div class="card dark darkable">
+            <div class="card-body">
+              <h2>Notifications</h2>
+              <hr/>
+              <table class="table">
+                {% for notif in notifications %}
+                  <tr>
+                    <td>
+                      <details>
+                        <summary><a href="{{ notif.html_url }}" target="_blank">{{ notif.title }}</a></summary>
+                        <p>{{ notif.message | safe }}</p>
+                      </details>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </table>
+            </div>
           </div>
-        </div>
+        {% endif %}
       </div>
       <div class="col-3">
-        <div class="card dark darkable">
-          <div class="card-body">
-            <h2>To Do</h2>
-            <hr/>
-            <table class="table todo">
-              <tr>
-                <th>
-                  <h4>Make Me Something</h4>
-                  <h5>Computer Science 1</h5>
-                  <h6>Due Friday, May 10</h6>
-                </th>
-              </tr>
-            </table>
+        {% if canvas_authed %}
+          <div class="card dark darkable">
+            <div class="card-body">
+              <h2>To Do</h2>
+              <hr/>
+              {% if todo %}
+                <table class="table todo">
+                  {% for item in todo %}
+                    <tr>
+                      <th>
+                        <h4>{{ item.assignment.name }}</h4>
+                        <h5>{{ item.course }}</h5>
+                        <h6>Due {{ item.assignment.due_at }}</h6>
+                      </th>
+                    </tr>
+                  {% endfor %}
+                </table>
+              {% else %}
+                <p>Nothing left to do?</p>
+                <p>Give yourself a pat on the back!</p>
+              {% endif %}
+            </div>
           </div>
-        </div>
-        <div class="card dark darkable">
-          <div class="card-body">
-            <h2>Grades</h2>
-            <hr/>
-            <details>
-              <summary>Click Here to Reveal</summary>
-              <br/>
-              <table class="table todo">
-                <tr>
-                  <th>Computer Science</th>
-                  <th>96% (A)</th>
-                </tr>
-                <tr>
-                  <th>Math</th>
-                  <th>86% (B)</th>
-                </tr>
-                <tr>
-                  <th>Science</th>
-                  <th>94% (A)</th>
-                </tr>
-              </table>
-            </details>
+          <div class="card dark darkable">
+            <div class="card-body">
+              <h2>Grades</h2>
+              <hr/>
+              <details>
+                <summary>Click Here to Reveal</summary>
+                <br/>
+                <table class="table todo">
+                  {% for item in grades %}
+                    <tr>
+                      <th>{{ item.name }}</th>
+                      <th>
+                        {% if item.enrollments.0.computed_current_score %}
+                          {{ item.enrollments.0.computed_current_score }}%
+                        {% endif %}
+
+                        {% if item.enrollments.0.computed_current_grade %}
+                          ({{ item.enrollments.0.computed_current_grade }})
+                        {% endif %}
+                      </th>
+                    </tr>
+                  {% endfor %}
+                </table>
+              </details>
+            </div>
           </div>
-        </div>
+        {% else %}
+          <div class="card dark darkable">
+            <div class="card-body">
+              <h2>Log In</h2>
+              <p>Want to get the most out of this homepage? Sign in with Canvas to see:</p>
+              <ul>
+                <li>Grades</li>
+                <li>Upcoming Assignments</li>
+                <li>Recent Feedback</li>
+                <li>Notifications</li>
+              </ul>
+              <h4 class="text-center"><a
+                      href="https://lhps.instructure.com/login/oauth2/auth?client_id=75360000000000229&response_type=code&redirect_uri=http://localhost:8000/canvas/oauth&scope={{ scopes }}">Click
+                Here to Sign In Now</a></h4>
+            </div>
+          </div>
+        {% endif %}
       </div>
     </div>
   </div>

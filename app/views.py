@@ -7,7 +7,7 @@ import requests
 from django.shortcuts import render, redirect
 from django.utils import timezone
 
-from app.util import canvas
+from app.util import canvas, color
 from app.util.bells import get_bell_schedule
 from app.util.lunch import lunch_menu
 
@@ -15,6 +15,9 @@ from app.util.lunch import lunch_menu
 def index(request):
     try:
         grade = request.session.get('grade', 0)
+        primary = request.session.get('primary', "#c3002f")
+        secondary = request.session.get('secondary', "#212137")
+        dark = color.is_dark(secondary)
 
         if 'access_token' in request.session:
             if timezone.now().timestamp() >= request.session['expires']:
@@ -36,6 +39,9 @@ def index(request):
             grades = canvas.get_grades_and_set_names(request)
 
             return render(request, "app/index.html", {
+                "primary": primary,
+                "secondary": secondary,
+                "dark": dark,
                 "lunch_menu": lunch_menu(),
                 "bells": get_bell_schedule(grade),
                 "weekend": timezone.now().weekday() in (5, 6),
@@ -46,6 +52,9 @@ def index(request):
             })
         else:
             return render(request, "app/index.html", {
+                "primary": primary,
+                "secondary": secondary,
+                "dark": dark,
                 "lunch_menu": lunch_menu(),
                 "bells": get_bell_schedule(grade),
                 "weekend": timezone.now().weekday() in (5, 6),

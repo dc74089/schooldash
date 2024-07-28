@@ -36,18 +36,70 @@
       }
 
       $(function () {
-          new JParticles.Particle('#main', {
-              color: ['{{ primary }}'],
-              lineShape: 'spider',
-              range: 2000,
-              proximity: 100,
-              lineWidth: 1,
-              // Turn on parallax effect
-              parallax: true,
-              num: 0.15,
-              minSpeed: 0.01,
-              maxSpeed: 0.2
-          });
+          {% if background == "particle" %}
+              new JParticles.Particle('#main', {
+                  color: ['{{ primary }}'],
+                  lineShape: 'spider',
+                  range: 2000,
+                  proximity: 100,
+                  lineWidth: 1,
+                  // Turn on parallax effect
+                  parallax: false,  //TODO: Fix
+                  num: 0.15,
+                  minSpeed: 0.01,
+                  maxSpeed: 0.2
+              });
+          {% elif background == "wave" %}
+              new JParticles.Wave('#main', {
+                  num: 10,
+                  // Draw line
+                  line: true,
+                  // The colors of the three lines in sequence
+                  lineColor: [
+                      "{{ primary }}ff",
+                      "{{ primary }}dd",
+                      "{{ primary }}bb",
+                      "{{ primary }}99",
+                      "{{ primary }}66",
+                      "{{ primary }}55",
+                      "{{ primary }}44",
+                      "{{ primary }}33",
+                      "{{ primary }}22",
+                      "{{ primary }}11",
+                  ],
+                  // The width of the three lines in turn
+                  lineWidth: 2,
+                  // The offset value of the three lines from the left in turn
+                  offsetLeft: [9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
+                  // All three lines are 0.75 times the height of the top offset container
+                  offsetTop: 0.6,
+                  // The height of the crests of the three lines in sequence
+                  crestHeight: [100, 120, 140, 160, 180, 200, 220, 240, 260, 280],
+                  // All three lines have only two crests
+                  crestCount: 2,
+                  speed: [0.025, 0.0225, 0.02, 0.0175, 0.015, 0.0125, 0.01, 0.0075, 0.005, 0.0025],
+              })
+          {% elif background == "snow" %}
+              new JParticles.Snow('#main', {
+                  color: "{{ primary }}"
+              })
+          {% elif background == "line" %}
+              new JParticles.Line('#main', {
+                  num: 20,
+                  color: [
+                      "{{ primary }}ff",
+                      "{{ primary }}dd",
+                      "{{ primary }}bb",
+                      "{{ primary }}99",
+                      "{{ primary }}66",
+                      "{{ primary }}55",
+                      "{{ primary }}44",
+                      "{{ primary }}33",
+                      "{{ primary }}22",
+                      "{{ primary }}11",
+                  ]
+              })
+          {% endif %}
 
           updateTime()
 
@@ -64,30 +116,40 @@
   <style>
       body {
           font-family: "Roboto", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-      }
-
-      body {
           background-color: {{ secondary }};
       }
 
+      body, h1, h2, h3, h4, h5, h6, p, ul, ol, li, tr, td, th, details, summary {
+          color: {{ bw }} !important;
+      }
+
+      a:not(.btn) {
+          color: {{ primary }};
+      }
+
+      a:visited {
+          filter: brightness(80%);
+      }
+
+      .btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
+          background-color: {{ primary }} !important;
+          color: {{ bw }} !important;
+          border-color: {{ primary }};
+      }
+
       .card {
+      {% if dark %}
+          background: rgba(0, 0, 0, 0.3);
+      {% else %}
           background: rgba(255, 255, 255, 0.3);
+      {% endif %}
           backdrop-filter: saturate(180%) blur(5px);
 
           margin-bottom: 16px;
       }
 
-      .card.dark {
-          background: rgba(0, 0, 0, 0.3);
-          backdrop-filter: saturate(180%) blur(5px);
-      }
-
       .modal-content {
           background-color: {{ secondary }};
-      }
-
-      .dark {
-          color: white;
       }
 
       .time {
@@ -97,12 +159,12 @@
 
       .table tr th, .table tr td {
           background-color: transparent;
-          color: white;
+          color: {{ bw }};
       }
 
       .accordion-header, .accordion-button, .accordion-button:not(.collapsed) {
           background-color: {{ secondary }};
-          color: white;
+          color: {{ bw }};
       }
 
       .accordion-button.collapsed::after {
@@ -115,7 +177,7 @@
 
       .accordion-item {
           background-color: transparent;
-          color: white;
+          color: {{ bw }};
       }
 
       .fab {
@@ -130,25 +192,25 @@
           justify-content: center;
           align-items: center;
           box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-          color: white;
+          color: {{ secondary }};
           font-size: 24px;
           cursor: pointer;
           transition: filter 0.3s;
       }
 
       .fab:hover {
-          filter: brightness(150%);
+          filter: brightness(120%);
       }
   </style>
 
 </head>
-<body class="dark darkable">
+<body class="">
 <div id="main" style="position:fixed; height: 100%; width: 100%; z-index: -9999;"></div>
 <main class="container-fluid">
   <div>
     <div class="row my-3">
       <div class="col-3">
-        <div class="card dark darkable">
+        <div class="card">
           <div class="card-body">
             <h2>Today's Info</h2>
             <hr/>
@@ -206,13 +268,13 @@
                     </div>
                   </div>
                 </div>
-                </div>
               {% endif %}
+            </div>
           </div>
         </div>
       </div>
       <div class="col-6">
-        <div class="card dark darkable">
+        <div class="card">
           <div class="card-body text-center">
             <h1 id="date">
               <span id="weekday"></span>,
@@ -230,7 +292,7 @@
           </div>
         </div>
         {% if canvas_authed %}
-          <div class="card dark darkable">
+          <div class="card">
             <div class="card-body">
               <h2>Canvas Activity Feed</h2>
               <hr/>
@@ -256,7 +318,7 @@
       </div>
       <div class="col-3">
         {% if canvas_authed %}
-          <div class="card dark darkable">
+          <div class="card">
             <div class="card-body">
               <h2>To Do</h2>
               <hr/>
@@ -278,7 +340,7 @@
               {% endif %}
             </div>
           </div>
-          <div class="card dark darkable">
+          <div class="card">
             <div class="card-body">
               <h2>Grades</h2>
               <hr/>
@@ -290,12 +352,16 @@
                     <tr>
                       <th>{{ item.name }}</th>
                       <th>
-                        {% if item.enrollments.0.computed_current_score %}
-                          {{ item.enrollments.0.computed_current_score }}%
-                        {% endif %}
+                        {% if item.enrollments.0.computed_current_score or item.enrollments.0.computed_current_grade %}
+                          {% if item.enrollments.0.computed_current_score %}
+                            {{ item.enrollments.0.computed_current_score }}%
+                          {% endif %}
 
-                        {% if item.enrollments.0.computed_current_grade %}
-                          ({{ item.enrollments.0.computed_current_grade }})
+                          {% if item.enrollments.0.computed_current_grade %}
+                            ({{ item.enrollments.0.computed_current_grade }})
+                          {% endif %}
+                        {% else %}
+                          Grade Not Found
                         {% endif %}
                       </th>
                     </tr>
@@ -305,7 +371,7 @@
             </div>
           </div>
         {% else %}
-          <div class="card dark darkable">
+          <div class="card">
             <div class="card-body">
               <h2>Log In</h2>
               <p>Want to get the most out of this homepage? Sign in with Canvas to see:</p>
@@ -332,7 +398,7 @@
   <div class="modal" tabindex="-1" id="myModal">
     <div class="modal-dialog">
       <div class="modal-content">
-        <form method="post">
+        <form method="post" action="{% url 'config' %}">
           {% csrf_token %}
           <div class="modal-header">
             <h5 class="modal-title">Settings</h5>
@@ -343,9 +409,18 @@
             <input type="color" class="form-control form-control-color" name="primary" value="{{ primary }}">
             <h4>Secondary Color</h4>
             <input type="color" class="form-control form-control-color" name="secondary" value="{{ secondary }}">
+            <h4>Background Type</h4>
+            <select name="background">
+              <option value="none" {% if background == "none" %}selected{% endif %}>None</option>
+              <option value="particle" {% if background == "particle" %}selected{% endif %}>Particle</option>
+              <option value="wave" {% if background == "wave" %}selected{% endif %}>Wave</option>
+              <option value="snow" {% if background == "snow" %}selected{% endif %}>Snow</option>
+              <option value="line" {% if background == "line" %}selected{% endif %}>Line</option>
+            </select>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <a class="btn btn-primary" href="{% url 'reset' %}">Reset Settings</a>
             <button type="submit" class="btn btn-primary">Save changes</button>
           </div>
         </form>

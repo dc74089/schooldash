@@ -19,6 +19,8 @@ def index(request):
         secondary = request.session.get('secondary', "#212137")
         dark = color.is_dark(secondary)
 
+        print("Dark" if dark else "Light")
+
         if 'access_token' in request.session:
             if timezone.now().timestamp() >= request.session['expires']:
                 resp = requests.post("https://lhps.instructure.com/login/oauth2/token", {
@@ -32,15 +34,17 @@ def index(request):
                 resp = resp.json()
 
                 request.session['access_token'] = resp['access_token']
-                request.session['expires'] = (timezone.now() + timedelta(seconds=int(resp['expires_in']) - 60)).timestamp()
+                request.session['expires'] = (
+                            timezone.now() + timedelta(seconds=int(resp['expires_in']) - 60)).timestamp()
                 request.session.save()
-
 
             grades = canvas.get_grades_and_set_names(request)
 
             return render(request, "app/index.html", {
                 "primary": primary,
                 "secondary": secondary,
+                "bw": "white" if dark else "black",
+                "background": request.session.get("background", "particle"),
                 "dark": dark,
                 "lunch_menu": lunch_menu(),
                 "bells": get_bell_schedule(grade),
@@ -54,6 +58,8 @@ def index(request):
             return render(request, "app/index.html", {
                 "primary": primary,
                 "secondary": secondary,
+                "bw": "white" if dark else "black",
+                "background": request.session.get("background", "particle"),
                 "dark": dark,
                 "lunch_menu": lunch_menu(),
                 "bells": get_bell_schedule(grade),
@@ -75,6 +81,25 @@ def index(request):
         print(traceback.format_exc())
         request.session.clear()
         return redirect("index")
+
+
+def config(request):
+    if request.method == "POST":
+        if 'primary' in request.POST:
+            request.session['primary'] = request.POST['primary']
+
+        if 'secondary' in request.POST:
+            request.session['secondary'] = request.POST['secondary']
+
+        if 'background' in request.POST:
+            request.session['background'] = request.POST['background']
+
+    return redirect('index')
+
+
+def reset(request):
+    request.session.clear()
+    return redirect('index')
 
 
 def oauth(request):

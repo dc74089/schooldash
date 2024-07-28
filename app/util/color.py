@@ -10,9 +10,11 @@ def is_dark(hex_color):
     # Calculate the luminance using the formula for relative luminance
     luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
 
+    print("Luminance:", luminance)
+
     # Use a threshold to decide whether to use black or white text
     # The threshold of 0.5 is commonly used, but you can adjust it if necessary
-    if luminance > 0.5:
+    if luminance < 0.5:
         return True
     else:
         return False

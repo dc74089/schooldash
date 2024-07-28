@@ -16,7 +16,6 @@ def get_activity_stream(request):
     resp = resp.json()
 
     for activity in resp:
-        print(activity['message'])
         activity['message'] = re.sub("<script.*/script>", '', activity['message'])
         activity['message'] = re.sub("<link [^>]*>(.*</link>)?", '', activity['message'])
 

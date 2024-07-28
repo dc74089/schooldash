@@ -35,7 +35,6 @@ def helper_build_menu(day):
 def lunch_menu():
     try:
         date = timezone.now().astimezone(timezone.get_default_timezone()).date()
-        date = date.replace(month=5, day=3)
 
         resp = requests.get(
             f"https://lhps.api.flikisdining.com/menu/api/weeks/school/charles-clayton-middle-school-campus-dining-hall/menu-type/lhp-us-lunch-available-daily-sides-651807093912170/{str(date.year)}/{str(date.month).zfill(2)}/{str(date.day).zfill(2)}/"

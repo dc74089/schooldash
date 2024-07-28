@@ -46,8 +46,6 @@ def lunch_menu():
             if date.strftime("%Y-%m-%d") == day['date']:
                 menu_today = helper_build_menu(day)
 
-        print(menu_today)
-
         return menu_today
 
     except:

@@ -9,24 +9,45 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
+import sys
 from pathlib import Path
+
+import pytz
+from django.core.management.utils import get_random_secret_key
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
+DEBUG = not os.getenv("PROD", False)
+DOCKER = os.getenv("DOCKER", False)
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-@zqu=!xs(7iw=snezi@i*na@quqai2zu=jyoojns=3t$bop5hi'
+if DOCKER and not DEBUG:
+    key_loc = "/app/secret/secret.key"
+    if not os.path.exists(key_loc):
+        with open(key_loc, "w") as f:
+            f.write(get_random_secret_key())
+    with open(key_loc, "r") as f:
+        try:
+            SECRET_KEY = f.read()
+        except IOError:
+            SECRET_KEY = ""
+elif DEBUG:
+    SECRET_KEY = 'django-insecure-5x+1sy-167242m776=rdp8zy03f$y182*hj7bk9e172k7b*q2v'
+else:
+    SECRET_KEY = ''
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+ALLOWED_HOSTS = [
+    'dash.canora.us'
+]
 
-ALLOWED_HOSTS = []
-
+if DEBUG:
+    ALLOWED_HOSTS.extend([
+        '127.0.0.1',
+        'localhost',
+        "*",
+    ])
 
 # Application definition
 
@@ -71,17 +92,32 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'schooldash.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if DOCKER:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'django',
+            'USER': 'django',
+            'PASSWORD': 'django',
+            'HOST': 'mysql',
+            'PORT': '3306',
+            'charset': 'utf8mb4',
+            'use_unicode': True,
+            'OPTIONS': {
+                'charset': 'utf8mb4'
+            }
+        }
     }
-}
-
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -101,23 +137,52 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout,
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/New_York'
+EST = pytz.timezone("America/New_York")
 
 USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+
+if DOCKER:
+    STATIC_ROOT = "/app/static"
+    MEDIA_ROOT = "/app/media"
+else:
+    MEDIA_ROOT = "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

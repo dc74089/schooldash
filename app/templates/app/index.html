@@ -61,6 +61,18 @@
           })
       }
 
+      function all_long_running() {
+          get_lunch()
+
+          if ({{ canvas_authed | lower }}) {
+              get_notif()
+              get_grades()
+              get_todo()
+          }
+
+          setTimeout(all_long_running, 1000*60*5);
+      }
+
       $(function () {
           {% if background == "particle" %}
               new JParticles.Particle('#main', {
@@ -128,18 +140,11 @@
           {% endif %}
 
           updateTime()
-          get_lunch()
-          get_notif()
-          get_grades()
-          get_todo()
+          all_long_running()
 
           setInterval(function () {
               updateTime()
           }, 100);
-
-          setTimeout(function () {
-              $("#reload_warning").show();
-          }, 60 * 60 * 1000)
       })
   </script>
 
@@ -306,10 +311,6 @@
               <span id="hour"></span>:<span id="minute"></span><span style="color: #808080">:<span
                     id="second"></span></span>
             </h1>
-            <div class="alert alert-warning" id="reload_warning" style="display: none;">
-              It's been awhile since you've refreshed. <a href="#" onclick="location.reload()">Click here to fetch the
-              most up-to-date info.</a>
-            </div>
           </div>
         </div>
         {% if canvas_authed %}

@@ -35,6 +35,32 @@
           $('#day').html(date.getDate())
       }
 
+      function get_lunch() {
+          $.get("{% url 'lunch' %}", function (data) {
+              $("#lunch_content").html(data)
+          }).fail(function () {
+              $("#lunch_container").hide()
+          })
+      }
+
+      function get_notif() {
+          $.get("{% url 'notif' %}", function (data) {
+              $("#notif_container").html(data)
+          })
+      }
+
+      function get_grades() {
+          $.get("{% url 'grades' %}", function (data) {
+              $("#grades_container").html(data)
+          })
+      }
+
+      function get_todo() {
+          $.get("{% url 'todo' %}", function (data) {
+              $("#todo_container").html(data)
+          })
+      }
+
       $(function () {
           {% if background == "particle" %}
               new JParticles.Particle('#main', {
@@ -102,6 +128,10 @@
           {% endif %}
 
           updateTime()
+          get_lunch()
+          get_notif()
+          get_grades()
+          get_todo()
 
           setInterval(function () {
               updateTime()
@@ -119,7 +149,7 @@
           background-color: {{ secondary }};
       }
 
-      body, h1, h2, h3, h4, h5, h6, p, ul, ol, li, tr, td, th, details, summary {
+      body, h1, h2, h3, h4, h5, h6, p, ul, ol, li, div, tr, td, th, details, summary {
           color: {{ bw }} !important;
       }
 
@@ -246,29 +276,20 @@
                   </div>
                 </div>
               </div>
-              {% if lunch_menu %}
-                <div class="accordion-item">
-                  <h2 class="accordion-header" id="headingTwo">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                      Lunch Menu
-                    </button>
-                  </h2>
-                  <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
-                       data-bs-parent="#todayAccordion">
-                    <div class="accordion-body">
-                      {% for k, v in lunch_menu.items %}
-                        <h5>{{ k }}</h5>
-                        <ul>
-                          {% for item in v %}
-                            <li>{{ item }}</li>
-                          {% endfor %}
-                        </ul>
-                      {% endfor %}
-                    </div>
+              <div class="accordion-item" id="lunch_container">
+                <h2 class="accordion-header" id="headingTwo">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                          data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Lunch Menu
+                  </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                     data-bs-parent="#todayAccordion">
+                  <div class="accordion-body" id="lunch_content">
+                    Loading...
                   </div>
                 </div>
-              {% endif %}
+              </div>
             </div>
           </div>
         </div>
@@ -296,22 +317,9 @@
             <div class="card-body">
               <h2>Canvas Activity Feed</h2>
               <hr/>
-              <table class="table">
-                {% for notif in notifications %}
-                  <tr>
-                    <td>
-                      {% if notif.type == "Announcement" %}
-                        <details>
-                          <summary><a href="{{ notif.html_url }}" target="_blank">{{ notif.title }}</a></summary>
-                          <p>{{ notif.message | safe }}</p>
-                        </details>
-                      {% else %}
-                        <a href="{{ notif.html_url }}" target="_blank">{{ notif.title }}</a>
-                      {% endif %}
-                    </td>
-                  </tr>
-                {% endfor %}
-              </table>
+              <div id="notif_container">
+                Loading...
+              </div>
             </div>
           </div>
         {% endif %}
@@ -322,22 +330,7 @@
             <div class="card-body">
               <h2>To Do</h2>
               <hr/>
-              {% if todo %}
-                <table class="table todo">
-                  {% for item in todo %}
-                    <tr>
-                      <th>
-                        <h4>{{ item.assignment.name }}</h4>
-                        <h5>Due <b>{{ item.assignment.due_at }}</b></h5>
-                        <h6>{{ item.course }}</h6>
-                      </th>
-                    </tr>
-                  {% endfor %}
-                </table>
-              {% else %}
-                <p>Nothing left to do?</p>
-                <p>Give yourself a pat on the back!</p>
-              {% endif %}
+              <div id="todo_container">Loading...</div>
             </div>
           </div>
           <div class="card">
@@ -347,26 +340,7 @@
               <details>
                 <summary>Click Here to Reveal</summary>
                 <br/>
-                <table class="table todo">
-                  {% for item in grades %}
-                    <tr>
-                      <th>{{ item.name }}</th>
-                      <th>
-                        {% if item.enrollments.0.computed_current_score or item.enrollments.0.computed_current_grade %}
-                          {% if item.enrollments.0.computed_current_score %}
-                            {{ item.enrollments.0.computed_current_score }}%
-                          {% endif %}
-
-                          {% if item.enrollments.0.computed_current_grade %}
-                            ({{ item.enrollments.0.computed_current_grade }})
-                          {% endif %}
-                        {% else %}
-                          Grade Not Found
-                        {% endif %}
-                      </th>
-                    </tr>
-                  {% endfor %}
-                </table>
+                <div id="grades_container">Loading...</div>
               </details>
             </div>
           </div>

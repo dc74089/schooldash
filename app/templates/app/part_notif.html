@@ -1,0 +1,16 @@
+<table class="table">
+  {% for notif in notifications %}
+    <tr>
+      <td>
+        {% if notif.type == "Announcement" %}
+          <details>
+            <summary><a href="{{ notif.html_url }}" target="_blank">{{ notif.title }}</a></summary>
+            <p>{{ notif.message | safe }}</p>
+          </details>
+        {% else %}
+          <a href="{{ notif.html_url }}" target="_blank">{{ notif.title }}</a>
+        {% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+</table>

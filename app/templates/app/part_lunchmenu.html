@@ -1,0 +1,8 @@
+{% for k, v in lunch_menu.items %}
+  <h5>{{ k }}</h5>
+  <ul>
+    {% for item in v %}
+      <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+{% endfor %}

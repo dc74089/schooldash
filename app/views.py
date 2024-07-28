@@ -4,6 +4,7 @@ from datetime import timedelta
 
 import canvasapi
 import requests
+from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.utils import timezone
 
@@ -35,10 +36,8 @@ def index(request):
 
                 request.session['access_token'] = resp['access_token']
                 request.session['expires'] = (
-                            timezone.now() + timedelta(seconds=int(resp['expires_in']) - 60)).timestamp()
+                        timezone.now() + timedelta(seconds=int(resp['expires_in']) - 60)).timestamp()
                 request.session.save()
-
-            grades = canvas.get_grades_and_set_names(request)
 
             return render(request, "app/index.html", {
                 "primary": primary,
@@ -46,13 +45,9 @@ def index(request):
                 "bw": "white" if dark else "black",
                 "background": request.session.get("background", "particle"),
                 "dark": dark,
-                "lunch_menu": lunch_menu(),
                 "bells": get_bell_schedule(grade),
                 "weekend": timezone.now().weekday() in (5, 6),
-                "canvas_authed": True,
-                "notifications": canvas.get_activity_stream(request),
-                "todo": canvas.get_todo(request),
-                "grades": grades
+                "canvas_authed": True
             })
         else:
             return render(request, "app/index.html", {
@@ -61,7 +56,6 @@ def index(request):
                 "bw": "white" if dark else "black",
                 "background": request.session.get("background", "particle"),
                 "dark": dark,
-                "lunch_menu": lunch_menu(),
                 "bells": get_bell_schedule(grade),
                 "weekend": timezone.now().weekday() in (5, 6),
                 "canvas_authed": False,
@@ -81,6 +75,36 @@ def index(request):
         print(traceback.format_exc())
         request.session.clear()
         return redirect("index")
+
+
+def lunch(request):
+    lunch = lunch_menu()
+
+    if lunch:
+        return render(request, "app/part_lunchmenu.html", {
+            "lunch_menu": lunch
+        })
+
+    else:
+        return HttpResponseNotFound()
+
+
+def notif(request):
+    return render(request, "app/part_notif.html", {
+        "notifications": canvas.get_activity_stream(request)
+    })
+
+
+def todo(request):
+    return render(request, "app/part_todo.html", {
+        "todo": canvas.get_todo(request)
+    })
+
+
+def grades(request):
+    return render(request, "app/part_grades.html", {
+        "grades": canvas.get_grades_and_set_names(request)
+    })
 
 
 def config(request):

@@ -28,7 +28,7 @@ def index(request):
                     "grant_type": "refresh_token",
                     "client_id": "75360000000000229",
                     "client_secret": os.getenv("CANVAS_CLIENT_SECRET"),
-                    "redirect_uri": "http://localhost:8000/canvas/oauth",
+                    "redirect_uri": "https://dash.canora.us/canvas/oauth",
                     "refresh_token": request.session['refresh_token']
                 })
 
@@ -136,7 +136,7 @@ def oauth(request):
             "grant_type": "authorization_code",
             "client_id": "75360000000000229",
             "client_secret": os.getenv("CANVAS_CLIENT_SECRET"),
-            "redirect_uri": "http://localhost:8000/canvas/oauth"
+            "redirect_uri": "https://dash.canora.us/canvas/oauth"
         })
 
         resp = resp.json()

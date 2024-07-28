@@ -13,4 +13,5 @@ urlpatterns = [
     path('reset', views.reset, name='reset'),
 
     path('canvas/oauth', views.oauth, name='canvas_oauth'),
+    path('favicon.svg', views.favicon, name='favicon'),
 ]

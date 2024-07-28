@@ -77,6 +77,16 @@ def index(request):
         return redirect("index")
 
 
+def favicon(request):
+    primary = request.session.get('primary', "#c3002f")
+    secondary = request.session.get('secondary', "#212137")
+
+    return render(request, "app/house.svg", {
+        "primary": primary,
+        "secondary": secondary,
+    })
+
+
 def lunch(request):
     lunch = lunch_menu()
 

@@ -8,6 +8,7 @@ from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.utils import timezone
 
+from app.models import CanvasToken
 from app.util import canvas, color
 from app.util.bells import get_bell_schedule
 from app.util.lunch import lunch_menu
@@ -154,5 +155,23 @@ def oauth(request):
         request.session['access_token'] = resp['access_token']
         request.session['refresh_token'] = resp['refresh_token']
         request.session['expires'] = (timezone.now() + timedelta(seconds=int(resp['expires_in']) - 60)).timestamp()
+
+        request.session.save()
+
+        userinfo_resp = requests.get(
+            "https://lhps.instructure.com/api/v1/users/self",
+            headers={"Authorization": f"Bearer {request.session['access_token']}"}
+        )
+
+        userinfo_resp = userinfo_resp.json()
+
+        ct = CanvasToken(
+            token=resp['access_token'],
+            refresh_token=resp['refresh_token'],
+            person_id=userinfo_resp['id']
+        )
+
+        ct.save()
+        ct.prune_other_tokens()
 
         return redirect('index')

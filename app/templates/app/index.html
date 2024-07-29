@@ -76,6 +76,11 @@
           setTimeout(all_long_running, 1000 * 60 * 5);
       }
 
+      function palette(color1, color2) {
+          $("#color_primary").val(color1)
+          $("#color_secondary").val(color2)
+      }
+
       $(function () {
           {% if background == "particle" %}
               new JParticles.Particle('#main', {
@@ -171,7 +176,7 @@
 
       .btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
           background-color: {{ primary }} !important;
-          color: {{ bw }} !important;
+          color: {{ pri_bw }} !important;
           border-color: {{ primary }};
       }
 
@@ -230,7 +235,7 @@
           justify-content: center;
           align-items: center;
           box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-          color: {{ secondary }};
+          color: {{ secondary }} !important;
           font-size: 24px;
           cursor: pointer;
           transition: filter 0.3s;
@@ -352,12 +357,13 @@
           <div class="card">
             <div class="card-body">
               <h2>Log In</h2>
-              <p>Want to get the most out of this homepage? Sign in with Canvas to see:</p>
+              <p>Want to get the most out of this page?</p>
+              <p>Sign in with Canvas to see:</p>
               <ul>
-                <li>Grades</li>
                 <li>Upcoming Assignments</li>
                 <li>Recent Feedback</li>
-                <li>Notifications</li>
+                <li>Grades</li>
+                <li>Other Canvas Notifications</li>
               </ul>
               <h4 class="text-center">
                 <a href="https://lhps.instructure.com/login/oauth2/auth?client_id=75360000000000229&response_type=code&purpose=dash.canora.us&redirect_uri=https://dash.canora.us/canvas/oauth&scope={{ scopes }}">
@@ -385,10 +391,44 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <h4>Primary Color</h4>
-            <input type="color" class="form-control form-control-color" name="primary" value="{{ primary }}">
-            <h4>Secondary Color</h4>
-            <input type="color" class="form-control form-control-color" name="secondary" value="{{ secondary }}">
+            <h4>Color Palettes</h4>
+            <div style="display: flex; flex-direction: row; justify-content: center; flex-wrap: wrap">
+              <a href="#" class="btn mx-1" style="background-color: #212137; color: #c3002f; border-color: white"
+                 onclick="palette('#c3002f', '#212137')">Default</a>
+              <a href="#" class="btn mx-1" style="background-color: #ffffff; color: #FF9999; border-color: black"
+                 onclick="palette('#FF9999', '#ffffff')">Peachy</a>
+              <a href="#" class="btn mx-1" style="background-color: #212137; color: #72c5da; border-color: white"
+                 onclick="palette('#72c5da', '#212137')">Da Ba Dee</a>
+              <a href="#" class="btn mx-1" style="background-color: #9ee4ff; color: #ffffff; border-color: white"
+                 onclick="palette('#ffffff', '#9ee4ff')">Sky</a>
+              <a href="#" class="btn mx-1" style="background-color: #8ACE00; color: black; border-color: black"
+                 onclick="palette('#000000', '#8ACE00')">Brat</a>
+              <a href="#" class="btn mx-1" style="background-color: black; color: #4af626; border-color: white"
+                 onclick="palette('#4af626', '#000000')">Terminal</a>
+              <a href="#" class="btn mx-1" style="background-color: #1a1a1a; color: #ff7518; border-color: white"
+                 onclick="palette('#ff7518', '#1a1a1a')">Hallow</a>
+            </div>
+            <hr/>
+            <h4>Custom Color</h4>
+            <h5>Primary Color</h5>
+            <div style="display: flex; flex-direction: row; align-items: center">
+              <input type="color" class="form-control form-control-color" name="primary" id="color_primary"
+                     value="{{ primary }}">
+              <p class="mb-0 ms-2">&lt;- Click Here to Choose Your Own Color</p>
+            </div>
+            <h5>Secondary Color</h5>
+            <div style="display: flex; flex-direction: row; align-items: center">
+              <input type="color" class="form-control form-control-color" name="secondary" id="color_secondary"
+                     value="{{ secondary }}">
+              <p class="mb-0 ms-2">&lt;- Click Here to Choose Your Own Color</p>
+            </div>
+            <p class="text-center mt-3">
+              <small>
+                Find a good combo? Let Tr. Canora know!<br/>
+                It might get added to the palettes above.
+              </small>
+            </p>
+            <hr/>
             <h4>Background Type</h4>
             <select name="background">
               <option value="none" {% if background == "none" %}selected{% endif %}>None</option>

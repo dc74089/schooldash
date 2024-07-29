@@ -19,9 +19,9 @@ def index(request):
         grade = request.session.get('grade', 0)
         primary = request.session.get('primary', "#c3002f")
         secondary = request.session.get('secondary', "#212137")
-        dark = color.is_dark(secondary)
+        pri_dark = color.is_dark(primary)
+        sec_dark = color.is_dark(secondary)
 
-        print("Dark" if dark else "Light")
 
         if 'access_token' in request.session:
             if timezone.now().timestamp() >= request.session['expires']:
@@ -43,9 +43,11 @@ def index(request):
             return render(request, "app/index.html", {
                 "primary": primary,
                 "secondary": secondary,
-                "bw": "white" if dark else "black",
+                "pri_bw": "white" if pri_dark else "black",
+                "bw": "white" if sec_dark else "black",
                 "background": request.session.get("background", "particle"),
-                "dark": dark,
+                "pri_dark": pri_dark,
+                "dark": sec_dark,
                 "bells": get_bell_schedule(grade),
                 "weekend": timezone.now().weekday() in (5, 6),
                 "canvas_authed": True
@@ -54,9 +56,11 @@ def index(request):
             return render(request, "app/index.html", {
                 "primary": primary,
                 "secondary": secondary,
-                "bw": "white" if dark else "black",
+                "pri_bw": "white" if pri_dark else "black",
+                "bw": "white" if sec_dark else "black",
                 "background": request.session.get("background", "particle"),
-                "dark": dark,
+                "pri_dark": pri_dark,
+                "dark": sec_dark,
                 "bells": get_bell_schedule(grade),
                 "weekend": timezone.now().weekday() in (5, 6),
                 "canvas_authed": False,

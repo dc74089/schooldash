@@ -2,6 +2,7 @@ import re
 
 import requests
 from dateutil.parser import parse
+from django.http.response import HttpResponseForbidden
 
 
 def get_name(request, course_id):
@@ -9,17 +10,23 @@ def get_name(request, course_id):
 
 
 def get_activity_stream(request):
-    resp = requests.get("https://lhps.instructure.com/api/v1/users/self/activity_stream", headers={
-        "Authorization": f"Bearer {request.session['access_token']}"
-    })
+    try:
+        resp = requests.get("https://lhps.instructure.com/api/v1/users/self/activity_stream", headers={
+            "Authorization": f"Bearer {request.session['access_token']}"
+        })
 
-    resp = resp.json()
+        resp = resp.json()
 
-    for activity in resp:
-        activity['message'] = re.sub("<script.*/script>", '', activity['message'])
-        activity['message'] = re.sub("<link [^>]*>(.*</link>)?", '', activity['message'])
+        for activity in resp:
+            activity['message'] = re.sub("<script.*/script>", '', activity['message'])
+            activity['message'] = re.sub("<link [^>]*>(.*</link>)?", '', activity['message'])
 
-    return resp
+        return resp
+    except TypeError:
+        del request.session['access_token']
+        del request.session['refresh_token']
+
+        return HttpResponseForbidden()
 
 
 def get_todo(request):

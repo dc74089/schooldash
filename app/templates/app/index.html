@@ -48,31 +48,25 @@
 
       function get_notif() {
           $.get("{% url 'notif' %}", function (data) {
-              $("#notif_container").html(data)
-          }).fail(function (data) {
+              alert(data.status)
+
               if (data.status == 403) {
                   location.reload()
               }
+
+              $("#notif_container").html(data)
           })
       }
 
       function get_grades() {
           $.get("{% url 'grades' %}", function (data) {
               $("#grades_container").html(data)
-          }).fail(function (data) {
-              if (data.status == 403) {
-                  location.reload()
-              }
           })
       }
 
       function get_todo() {
           $.get("{% url 'todo' %}", function (data) {
               $("#todo_container").html(data)
-          }).fail(function (data) {
-              if (data.status == 403) {
-                  location.reload()
-              }
           })
       }
 

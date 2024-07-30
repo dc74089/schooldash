@@ -47,10 +47,10 @@
       }
 
       function get_notif() {
-          $.get("{% url 'notif' %}", function (data) {
-              alert(data.status)
+          $.get("{% url 'notif' %}", function (data, status, obj) {
+              alert(obj.status)
 
-              if (data.status == 403) {
+              if (obj.status == 403) {
                   location.reload()
               }
 

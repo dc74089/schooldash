@@ -32,33 +32,48 @@ def get_activity_stream(request):
 
 
 def get_todo(request):
-    resp = requests.get("https://lhps.instructure.com/api/v1/users/self/todo", headers={
-        "Authorization": f"Bearer {request.session['access_token']}"
-    })
+    try:
+        resp = requests.get("https://lhps.instructure.com/api/v1/users/self/todo", headers={
+            "Authorization": f"Bearer {request.session['access_token']}"
+        })
 
-    resp = resp.json()
+        resp = resp.json()
 
-    for item in resp:
-        item['assignment']['due_at'] = parse(item['assignment']['due_at']).date()
-        item['course'] = get_name(request, item['course_id'])
+        for item in resp:
+            item['assignment']['due_at'] = parse(item['assignment']['due_at']).date()
+            item['course'] = get_name(request, item['course_id'])
 
-    return resp
+        return resp
+    except TypeError:
+        del request.session['access_token']
+        del request.session['refresh_token']
 
+        request.session.save()
+
+        return HttpResponseForbidden()
 
 
 def get_grades_and_set_names(request):
-    resp = requests.get("https://lhps.instructure.com/api/v1/courses", headers={
-        "Authorization": f"Bearer {request.session['access_token']}"
-    }, params={
-        "enrollment_type": "student",
-        "enrollment_state": "active",
-        "include[]": ["total_scores", "current_grading_period_scores"],
-        "per_page": 100,
-    })
+    try:
+        resp = requests.get("https://lhps.instructure.com/api/v1/courses", headers={
+            "Authorization": f"Bearer {request.session['access_token']}"
+        }, params={
+            "enrollment_type": "student",
+            "enrollment_state": "active",
+            "include[]": ["total_scores", "current_grading_period_scores"],
+            "per_page": 100,
+        })
 
-    resp = resp.json()
+        resp = resp.json()
 
-    request.session['names'] = {item['id']: item['name'] for item in resp}
-    request.session.save()
+        request.session['names'] = {item['id']: item['name'] for item in resp}
+        request.session.save()
 
-    return resp
+        return resp
+    except TypeError:
+        del request.session['access_token']
+        del request.session['refresh_token']
+
+        request.session.save()
+
+        return HttpResponseForbidden()

@@ -4,7 +4,7 @@ from datetime import timedelta
 
 import canvasapi
 import requests
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseNotFound, HttpResponseBase
 from django.shortcuts import render, redirect
 from django.utils import timezone
 
@@ -21,7 +21,6 @@ def index(request):
         secondary = request.session.get('secondary', "#212137")
         pri_dark = color.is_dark(primary)
         sec_dark = color.is_dark(secondary)
-
 
         if 'access_token' in request.session:
             if timezone.now().timestamp() >= request.session['expires']:
@@ -105,20 +104,35 @@ def lunch(request):
 
 
 def notif(request):
+    resp = canvas.get_activity_stream(request)
+
+    if isinstance(resp, HttpResponseBase):
+        return resp
+
     return render(request, "app/part_notif.html", {
-        "notifications": canvas.get_activity_stream(request)
+        "notifications": resp
     })
 
 
 def todo(request):
+    resp = canvas.get_todo(request)
+
+    if isinstance(resp, HttpResponseBase):
+        return resp
+
     return render(request, "app/part_todo.html", {
-        "todo": canvas.get_todo(request)
+        "todo": resp
     })
 
 
 def grades(request):
+    resp = canvas.get_grades_and_set_names(request)
+
+    if isinstance(resp, HttpResponseBase):
+        return resp
+
     return render(request, "app/part_grades.html", {
-        "grades": canvas.get_grades_and_set_names(request)
+        "grades": resp
     })
 
 

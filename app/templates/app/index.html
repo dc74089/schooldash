@@ -97,6 +97,14 @@
           $("#color_secondary").val(color2)
       }
 
+      function swap_colors() {
+          let color1 = $("#color_primary").val()
+          let color2 = $("#color_secondary").val()
+
+          $("#color_primary").val(color2)
+          $("#color_secondary").val(color1)
+      }
+
       $(function () {
           {% if background == "particle" %}
               new JParticles.Particle('#main', {
@@ -268,7 +276,7 @@
 <main class="container-fluid">
   <div>
     <div class="row my-3">
-      <div class="col-3">
+      <div class="col-12 col-lg-3 order-2 order-lg-1">
         <div class="card">
           <div class="card-body">
             <h2>Today's Info</h2>
@@ -323,7 +331,7 @@
           </div>
         </div>
       </div>
-      <div class="col-6">
+      <div class="col-12 col-lg-6 order-1 order-lg-2">
         <div class="card">
           <div class="card-body text-center">
             <h1 id="date">
@@ -349,7 +357,7 @@
           </div>
         {% endif %}
       </div>
-      <div class="col-3">
+      <div class="col-12 col-lg-3 order-3">
         {% if canvas_authed %}
           <div class="card">
             <div class="card-body">
@@ -408,7 +416,7 @@
           </div>
           <div class="modal-body">
             <h4>Color Palettes</h4>
-            <div style="display: flex; flex-direction: row; justify-content: center; flex-wrap: wrap">
+            <div style="display: flex; flex-direction: row; justify-content: center; flex-wrap: wrap; row-gap: 6px">
               <a href="#" class="btn mx-1" style="background-color: #212137; color: #c3002f; border-color: white"
                  onclick="palette('#c3002f', '#212137')">Default</a>
               <a href="#" class="btn mx-1" style="background-color: #ffffff; color: #FF9999; border-color: black"
@@ -421,20 +429,39 @@
                  onclick="palette('#4af626', '#000000')">Terminal</a>
               <a href="#" class="btn mx-1" style="background-color: #1a1a1a; color: #ff7518; border-color: white"
                  onclick="palette('#ff7518', '#1a1a1a')">Hallow</a>
+              <a href="#" class="btn mx-1" style="background-color: #FFE8F5; color: #9000FF; border-color: black"
+                 onclick="palette('#9000FF', '#FFE8F5')">Royal</a>
+              <a href="#" class="btn mx-1" style="background-color: #F0EDCC; color: #021f26; border-color: black"
+                 onclick="palette('#021f26', '#F0EDCC')">Bookish</a>
+              <a href="#" class="btn mx-1" style="background-color: #660a20; color: #e9877e; border-color: white"
+                 onclick="palette('#e9877e', '#660a20')">Red-y For It</a>
+              <a href="#" class="btn mx-1" style="background-color: #DBB98F; color: #96351F; border-color: white"
+                 onclick="palette('#96351F', '#DBB98F')">Java</a>
+              <a href="#" class="btn mx-1" style="background-color: #EC449B; color: #99F443; border-color: white"
+                 onclick="palette('#99F443', '#EC449B')">Fairly Odd</a>
+              <a href="#" class="btn mx-1" style="background-color: #F7F7F9; color: #D2302C; border-color: black"
+                 onclick="palette('#D2302C', '#F7F7F9')">Candy Cane</a>
+              <a href="#" class="btn mx-1" style="background-color: #070952; color: #ef4da0; border-color: white"
+                 onclick="palette('#ef4da0', '#070952')">NavyPink</a>
+              <a href="#" class="btn mx-1" style="background-color: #ed6f63; color: #2D2926; border-color: white"
+                 onclick="palette('#2D2926', '#ed6f63')">Salmo Salar</a>
             </div>
             <hr/>
             <h4>Custom Color</h4>
-            <h5>Primary Color</h5>
-            <div style="display: flex; flex-direction: row; align-items: center">
-              <input type="color" class="form-control form-control-color" name="primary" id="color_primary"
-                     value="{{ primary }}">
-              <p class="mb-0 ms-2">&lt;- Click Here to Choose Your Own Color</p>
-            </div>
-            <h5>Secondary Color</h5>
-            <div style="display: flex; flex-direction: row; align-items: center">
-              <input type="color" class="form-control form-control-color" name="secondary" id="color_secondary"
-                     value="{{ secondary }}">
-              <p class="mb-0 ms-2">&lt;- Click Here to Choose Your Own Color</p>
+            <div class="row">
+              <div class="col-5">
+                <h5>Primary Color</h5>
+                <input type="color" class="form-control form-control-color" name="primary" id="color_primary"
+                       value="{{ primary }}" style="width: 100%">
+              </div>
+              <div class="col-2 px-0" style="position:relative;">
+                <a class="btn btn-secondary" onclick="swap_colors()" href="#" style="position:absolute; bottom: 0; width: 100%">Swap</a>
+              </div>
+              <div class="col-5">
+                <h5>Secondary Color</h5>
+                <input type="color" class="form-control form-control-color" name="secondary" id="color_secondary"
+                       value="{{ secondary }}" style="width: 100%">
+              </div>
             </div>
             <p class="text-center mt-3">
               <small>

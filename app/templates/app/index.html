@@ -26,6 +26,7 @@
   <script>
       const months = ["Jan", "Feb", "March", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"]
       const days = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"]
+      let reloading = false;
 
       function updateTime() {
           var date = new Date();
@@ -50,9 +51,8 @@
           $.get("{% url 'notif' %}", function (data) {
               $("#notif_container").html(data)
           }).fail(function (obj) {
-              alert(obj.status)
-
-              if (obj.status == 403) {
+              if (obj.status == 403 && !reloading) {
+                  reloading = true;
                   location.reload()
               }
           })
@@ -61,12 +61,22 @@
       function get_grades() {
           $.get("{% url 'grades' %}", function (data) {
               $("#grades_container").html(data)
+          }).fail(function (obj) {
+              if (obj.status == 403 && !reloading) {
+                  reloading = true;
+                  location.reload()
+              }
           })
       }
 
       function get_todo() {
           $.get("{% url 'todo' %}", function (data) {
               $("#todo_container").html(data)
+          }).fail(function (obj) {
+              if (obj.status == 403 && !reloading) {
+                  reloading = true;
+                  location.reload()
+              }
           })
       }
 

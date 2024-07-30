@@ -26,6 +26,8 @@ def get_activity_stream(request):
         del request.session['access_token']
         del request.session['refresh_token']
 
+        request.session.save()
+
         return HttpResponseForbidden()
 
 

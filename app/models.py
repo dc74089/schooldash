@@ -26,21 +26,25 @@ class CanvasToken(models.Model):
     person_id = models.CharField(max_length=100)
 
     def refresh_and_delete(self):
-        resp = requests.post("https://lhps.instructure.com/login/oauth2/token", {
-            "grant_type": "refresh_token",
-            "client_id": "75360000000000229",
-            "client_secret": os.getenv("CANVAS_CLIENT_SECRET"),
-            "redirect_uri": "https://dash.canora.us/canvas/oauth",
-            "refresh_token": self.refresh_token
-        })
+        try:
+            resp = requests.post("https://lhps.instructure.com/login/oauth2/token", {
+                "grant_type": "refresh_token",
+                "client_id": "75360000000000229",
+                "client_secret": os.getenv("CANVAS_CLIENT_SECRET"),
+                "redirect_uri": "https://dash.canora.us/canvas/oauth",
+                "refresh_token": self.refresh_token
+            })
 
-        resp = resp.json()
-        print(resp)
+            resp = resp.json()
+            print(resp)
 
-        requests.delete(
-            'https://lhps.instructure.com/login/oauth2/token',
-            headers={"Authorization": f"Bearer {resp['access_token']}"}
-        )
+            requests.delete(
+                'https://lhps.instructure.com/login/oauth2/token',
+                headers={"Authorization": f"Bearer {resp['access_token']}"}
+            )
+
+        except KeyError:
+            pass  # Token has already been deleted
 
         self.delete()
 

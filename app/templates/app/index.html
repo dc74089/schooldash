@@ -47,14 +47,14 @@
       }
 
       function get_notif() {
-          $.get("{% url 'notif' %}", function (data, status, obj) {
+          $.get("{% url 'notif' %}", function (data) {
+              $("#notif_container").html(data)
+          }).fail(function (obj) {
               alert(obj.status)
 
               if (obj.status == 403) {
-                  //location.reload()
+                  location.reload()
               }
-
-              $("#notif_container").html(data)
           })
       }
 

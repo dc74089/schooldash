@@ -180,3 +180,36 @@ def get_bell_schedule(grade):
             return thurs_8 if grade == 8 else thurs_7
         else:
             return None
+
+
+def get_schedule_name():
+    soq = ScheduleOverride.objects.filter(date=timezone.now().date())
+
+    if soq.exists():
+        override: ScheduleOverride = soq.first()
+
+        if override.schedule == "all":
+            return "M/T/F Schedule -- All Classes"
+        elif override.schedule == "wed":
+            return "Wednesday -- Even Periods"
+        elif override.schedule == "thurs":
+            return "Thursday -- Odd Periods"
+        elif override.schedule == "early":
+            return "Early Day -- All Classes"
+        elif override.schedule == "amass":
+            return "AM Assembly -- Even Periods"
+        elif override.schedule == "pmass":
+            return "PM Assembly -- Even Periods"
+        else:
+            return None
+    else:
+        today = timezone.now().date()
+
+        if today.weekday() in (0, 1, 4):
+            return "M/T/F Schedule -- All Classes"
+        elif today.weekday() == 2:
+            return "Wednesday -- Even Periods"
+        elif today.weekday() == 3:
+            return "Thursday -- Odd Periods"
+        else:
+            return None

@@ -294,6 +294,7 @@
                      data-bs-parent="#todayAccordion">
                   <div class="accordion-body">
                     {% if bells %}
+                      <h6 style="text-align: center">{{ schedule_name }}</h6>
                       <table class="table table-bordered schedule">
                         {% for entry in bells %}
                           <tr>
@@ -458,7 +459,7 @@
                 <a class="btn btn-secondary" onclick="swap_colors()" href="#" style="position:absolute; bottom: 0; width: 100%">Swap</a>
               </div>
               <div class="col-5">
-                <h5>Secondary Color</h5>
+                <h5>Background Color</h5>
                 <input type="color" class="form-control form-control-color" name="secondary" id="color_secondary"
                        value="{{ secondary }}" style="width: 100%">
               </div>

@@ -19,6 +19,12 @@ class ScheduleOverride(models.Model):
     date = models.DateField()
     schedule = models.CharField(max_length=20, choices=schedules)
 
+    class Meta:
+        ordering = ['-date']
+
+    def __str__(self):
+        return f"{self.date}: {self.get_schedule_display()}"
+
 
 class CanvasToken(models.Model):
     token = models.CharField(max_length=100)

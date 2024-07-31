@@ -10,7 +10,7 @@ from django.utils import timezone
 
 from app.models import CanvasToken
 from app.util import canvas, color
-from app.util.bells import get_bell_schedule
+from app.util.bells import get_bell_schedule, get_schedule_name
 from app.util.lunch import lunch_menu
 
 
@@ -48,6 +48,7 @@ def index(request):
                 "pri_dark": pri_dark,
                 "dark": sec_dark,
                 "bells": get_bell_schedule(grade),
+                "schedule_name": get_schedule_name(),
                 "weekend": timezone.now().weekday() in (5, 6),
                 "canvas_authed": True
             })
@@ -61,6 +62,7 @@ def index(request):
                 "pri_dark": pri_dark,
                 "dark": sec_dark,
                 "bells": get_bell_schedule(grade),
+                "schedule_name": get_schedule_name(),
                 "weekend": timezone.now().weekday() in (5, 6),
                 "canvas_authed": False,
                 "scopes": " ".join((

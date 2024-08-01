@@ -1,4 +1,5 @@
 from dateutil.parser import parse
+from django.conf import settings
 from django.utils import timezone
 
 from app.models import ScheduleOverride
@@ -150,7 +151,7 @@ pmass_8 = transform((
 
 
 def get_bell_schedule(grade):
-    soq = ScheduleOverride.objects.filter(date=timezone.now().date())
+    soq = ScheduleOverride.objects.filter(date=timezone.now().astimezone(settings.EST).date())
 
     if soq.exists():
         override: ScheduleOverride = soq.first()
@@ -170,7 +171,7 @@ def get_bell_schedule(grade):
         else:
             return None
     else:
-        today = timezone.now().date()
+        today = timezone.now().astimezone(settings.EST).date()
 
         if today.weekday() in (0, 1, 4):
             return normal_8 if grade == 8 else normal_7
@@ -183,7 +184,7 @@ def get_bell_schedule(grade):
 
 
 def get_schedule_name():
-    soq = ScheduleOverride.objects.filter(date=timezone.now().date())
+    soq = ScheduleOverride.objects.filter(date=timezone.now().astimezone(settings.EST).date())
 
     if soq.exists():
         override: ScheduleOverride = soq.first()
@@ -203,7 +204,7 @@ def get_schedule_name():
         else:
             return None
     else:
-        today = timezone.now().date()
+        today = timezone.now().astimezone(settings.EST).date()
 
         if today.weekday() in (0, 1, 4):
             return "M/T/F Schedule -- All Classes"

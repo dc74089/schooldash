@@ -182,7 +182,13 @@
 
   <style>
       body {
+      {% if secondary.lower == '#8ace00' %}
+          font-family: "Arial Narrow", "Roboto", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+          filter: blur(0.7px);
+          text-transform: lowercase;
+      {% else %}
           font-family: "Roboto", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      {% endif %}
           background-color: {{ secondary }};
       }
 
@@ -456,7 +462,8 @@
                        value="{{ primary }}" style="width: 100%">
               </div>
               <div class="col-2 px-0" style="position:relative;">
-                <a class="btn btn-secondary" onclick="swap_colors()" href="#" style="position:absolute; bottom: 0; width: 100%">Swap</a>
+                <a class="btn btn-secondary" onclick="swap_colors()" href="#"
+                   style="position:absolute; bottom: 0; width: 100%">Swap</a>
               </div>
               <div class="col-5">
                 <h5>Background Color</h5>

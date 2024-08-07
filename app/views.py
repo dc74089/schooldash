@@ -16,7 +16,7 @@ from app.util.lunch import lunch_menu
 
 def index(request):
     try:
-        grade = request.session.get('grade', 0)
+        grade = int(request.session.get('grade', 0))
         primary = request.session.get('primary', "#c3002f")
         secondary = request.session.get('secondary', "#212137")
         pri_dark = color.is_dark(primary)

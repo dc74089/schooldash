@@ -500,8 +500,8 @@
             <hr/>
             <h4>Grade</h4>
             <select name="grade" class="form-control custom-select">
-              <option value="7">7th Grade</option>
-              <option value="8">8th Grade</option>
+              <option value="7" {% if grade == 7 %}selected{% endif %}>7th Grade</option>
+              <option value="8" {% if grade == 8 %}selected{% endif %}>8th Grade</option>
             </select>
 
           </div>

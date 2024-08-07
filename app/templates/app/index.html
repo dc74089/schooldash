@@ -177,17 +177,28 @@
           setInterval(function () {
               updateTime()
           }, 100);
+
+          if ({{ grade }} == 0) {
+              const gradeModal = new bootstrap.Modal('#gradeModal', {
+                  keyboard: false,
+                  backdrop: "static"
+              })
+
+              gradeModal.show()
+          }
       })
   </script>
 
   <style>
       body {
       {% if secondary.lower == '#8ace00' %}
-          font-family: "Arial Narrow", "Roboto", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+          font-family: "Arial Narrow", "Roboto", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+          ;
           filter: blur(0.7px);
           text-transform: lowercase;
       {% else %}
-          font-family: "Roboto", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+          font-family: "Roboto", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+          ;
       {% endif %}
           background-color: {{ secondary }};
       }
@@ -479,18 +490,47 @@
             </p>
             <hr/>
             <h4>Background Type</h4>
-            <select name="background">
+            <select name="background" class="form-control custom-select">
               <option value="none" {% if background == "none" %}selected{% endif %}>None</option>
               <option value="particle" {% if background == "particle" %}selected{% endif %}>Spiderweb</option>
               <option value="wave" {% if background == "wave" %}selected{% endif %}>Wave</option>
               <option value="snow" {% if background == "snow" %}selected{% endif %}>Snow</option>
               <option value="line" {% if background == "line" %}selected{% endif %}>Line</option>
             </select>
+            <hr/>
+            <h4>Grade</h4>
+            <select name="grade" class="form-control custom-select">
+              <option value="7">7th Grade</option>
+              <option value="8">8th Grade</option>
+            </select>
+
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <a class="btn btn-primary" href="{% url 'reset' %}">Reset Settings</a>
             <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" tabindex="-1" id="gradeModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="post" action="{% url 'config' %}">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title">Grade</h5>
+          </div>
+          <div class="modal-body">
+            <h2>What grade are you in?</h2>
+            <select name="grade" class="form-control custom-select">
+              <option value="7">7th Grade</option>
+              <option value="8">8th Grade</option>
+            </select>
+
+            <button class="btn btn-primary mt-3">Continue</button>
           </div>
         </form>
       </div>

@@ -47,6 +47,7 @@ def index(request):
                 "background": request.session.get("background", "particle"),
                 "pri_dark": pri_dark,
                 "dark": sec_dark,
+                "grade": grade,
                 "bells": get_bell_schedule(grade),
                 "schedule_name": get_schedule_name(),
                 "weekend": timezone.now().weekday() in (5, 6),
@@ -61,6 +62,7 @@ def index(request):
                 "background": request.session.get("background", "particle"),
                 "pri_dark": pri_dark,
                 "dark": sec_dark,
+                "grade": grade,
                 "bells": get_bell_schedule(grade),
                 "schedule_name": get_schedule_name(),
                 "weekend": timezone.now().weekday() in (5, 6),
@@ -148,6 +150,9 @@ def config(request):
 
         if 'background' in request.POST:
             request.session['background'] = request.POST['background']
+
+        if 'grade' in request.POST:
+            request.session['grade'] = request.POST['grade']
 
     return redirect('index')
 

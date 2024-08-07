@@ -151,6 +151,9 @@ pmass_8 = transform((
 
 
 def get_bell_schedule(grade):
+    if grade:
+        grade = int(grade)
+
     soq = ScheduleOverride.objects.filter(date=timezone.now().astimezone(settings.EST).date())
 
     if soq.exists():

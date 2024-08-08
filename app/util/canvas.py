@@ -23,6 +23,12 @@ def get_activity_stream(request):
 
         return resp
     except TypeError:
+        try:
+            print("Logging out")
+            print(resp)
+        except:
+            pass
+
         del request.session['access_token']
         del request.session['refresh_token']
 
@@ -45,6 +51,12 @@ def get_todo(request):
 
         return resp
     except TypeError:
+        try:
+            print("Logging out")
+            print(resp)
+        except:
+            pass
+
         del request.session['access_token']
         del request.session['refresh_token']
 
@@ -71,6 +83,12 @@ def get_grades_and_set_names(request):
 
         return resp
     except TypeError:
+        try:
+            print("Logging out")
+            print(resp)
+        except:
+            pass
+
         del request.session['access_token']
         del request.session['refresh_token']
 

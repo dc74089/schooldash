@@ -13,21 +13,22 @@ def get_name(request, course_id):
 
 
 def do_refresh_if_needed(request):
-    if timezone.now().timestamp() >= request.session['expires']:
-        resp = requests.post("https://lhps.instructure.com/login/oauth2/token", {
-            "grant_type": "refresh_token",
-            "client_id": "75360000000000229",
-            "client_secret": os.getenv("CANVAS_CLIENT_SECRET"),
-            "redirect_uri": "https://dash.canora.us/canvas/oauth",
-            "refresh_token": request.session['refresh_token']
-        })
+    if 'expires' in request.session:
+        if timezone.now().timestamp() >= request.session['expires']:
+            resp = requests.post("https://lhps.instructure.com/login/oauth2/token", {
+                "grant_type": "refresh_token",
+                "client_id": "75360000000000229",
+                "client_secret": os.getenv("CANVAS_CLIENT_SECRET"),
+                "redirect_uri": "https://dash.canora.us/canvas/oauth",
+                "refresh_token": request.session['refresh_token']
+            })
 
-        resp = resp.json()
+            resp = resp.json()
 
-        request.session['access_token'] = resp['access_token']
-        request.session['expires'] = (
-                timezone.now() + timedelta(seconds=int(resp['expires_in']) - 60)).timestamp()
-        request.session.save()
+            request.session['access_token'] = resp['access_token']
+            request.session['expires'] = (
+                    timezone.now() + timedelta(seconds=int(resp['expires_in']) - 60)).timestamp()
+            request.session.save()
 
 
 def get_activity_stream(request):

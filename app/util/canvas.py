@@ -64,12 +64,13 @@ def get_activity_stream(request):
         out = []
 
         for activity in resp:
-            # if activity.get("read_state", False): continue
+            if activity.get("read_state", False): continue
 
-            activity['message'] = re.sub("<script.*/script>", '', activity['message'])
-            activity['message'] = re.sub("<link [^>]*>(.*</link>)?", '', activity['message'])
+            if 'message' in activity and activity['message']:
+                activity['message'] = re.sub("<script.*/script>", '', activity['message'])
+                activity['message'] = re.sub("<link [^>]*>(.*</link>)?", '', activity['message'])
 
-            if activity['course_id']:
+            if 'course_id' in activity and activity['course_id']:
                 activity['course'] = get_name(request, activity['course_id'])
 
             out.append(activity)

@@ -2,11 +2,11 @@
   <table class="table todo">
     {% for item in todo %}
       <tr>
-        <th>
-          <h4>{{ item.assignment.name }}</h4>
-          <h5>Due <b>{{ item.assignment.due_at }}</b></h5>
-          <h6>{{ item.course }}</h6>
-        </th>
+        <td>
+          <p style="margin-bottom: 8px;">{{ item.course }}</p>
+          <h4 style="margin-bottom: 8px">{{ item.assignment.name }}</h4>
+          <p>Due <b>{{ item.assignment.due_at }}</b></p>
+        </td>
       </tr>
     {% endfor %}
   </table>

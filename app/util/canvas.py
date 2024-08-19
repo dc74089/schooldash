@@ -8,8 +8,29 @@ from django.http.response import HttpResponseForbidden
 from django.utils import timezone
 
 
+def init_course_names(request):
+    do_refresh_if_needed(request)
+
+    resp = requests.get("https://lhps.instructure.com/api/v1/courses", headers={
+        "Authorization": f"Bearer {request.session['access_token']}"
+    }, params={
+        "per_page": 100,
+    })
+
+    resp = resp.json()
+
+    request.session['names'] = {item['id']: item['name'] for item in resp}
+    request.session.save()
+
+    print(request.session['names'])
+
+
 def get_name(request, course_id):
-    return dict(request.session['names']).get(course_id, "Unknown Course")
+    try:
+        course_id = str(course_id)
+        return dict(request.session['names']).get(course_id, "Unknown Course")
+    except KeyError:
+        return "Unknown Course"
 
 
 def do_refresh_if_needed(request):
@@ -40,12 +61,20 @@ def get_activity_stream(request):
         })
 
         resp = resp.json()
+        out = []
 
         for activity in resp:
+            # if activity.get("read_state", False): continue
+
             activity['message'] = re.sub("<script.*/script>", '', activity['message'])
             activity['message'] = re.sub("<link [^>]*>(.*</link>)?", '', activity['message'])
 
-        return resp
+            if activity['course_id']:
+                activity['course'] = get_name(request, activity['course_id'])
+
+            out.append(activity)
+
+        return out
     except TypeError:
         del request.session['access_token']
         del request.session['refresh_token']
@@ -79,7 +108,7 @@ def get_todo(request):
         return HttpResponseForbidden()
 
 
-def get_grades_and_set_names(request):
+def get_grades(request):
     try:
         do_refresh_if_needed(request)
 
@@ -93,9 +122,6 @@ def get_grades_and_set_names(request):
         })
 
         resp = resp.json()
-
-        request.session['names'] = {item['id']: item['name'] for item in resp}
-        request.session.save()
 
         return resp
     except TypeError:

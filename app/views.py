@@ -2,8 +2,8 @@ import os
 import traceback
 from datetime import timedelta
 
-import canvasapi
 import requests
+from django.conf import settings
 from django.http import HttpResponseNotFound, HttpResponseBase
 from django.shortcuts import render, redirect
 from django.utils import timezone
@@ -16,6 +16,7 @@ from app.util.lunch import lunch_menu
 
 def index(request):
     try:
+        host = 'http://localhost:8000' if settings.DEBUG else 'https://dash.canora.us'
         grade = int(request.session.get('grade', 0))
         primary = request.session.get('primary', "#c3002f")
         secondary = request.session.get('secondary', "#212137")
@@ -26,6 +27,7 @@ def index(request):
             canvas.do_refresh_if_needed(request)
 
             return render(request, "app/index.html", {
+                "host": host,
                 "primary": primary,
                 "secondary": secondary,
                 "pri_bw": "white" if pri_dark else "black",
@@ -41,6 +43,7 @@ def index(request):
             })
         else:
             return render(request, "app/index.html", {
+                "host": host,
                 "primary": primary,
                 "secondary": secondary,
                 "pri_bw": "white" if pri_dark else "black",
@@ -116,7 +119,7 @@ def todo(request):
 
 
 def grades(request):
-    resp = canvas.get_grades_and_set_names(request)
+    resp = canvas.get_grades(request)
 
     if isinstance(resp, HttpResponseBase):
         return resp
@@ -158,7 +161,7 @@ def oauth(request):
             "grant_type": "authorization_code",
             "client_id": "75360000000000229",
             "client_secret": os.getenv("CANVAS_CLIENT_SECRET"),
-            "redirect_uri": "https://dash.canora.us/canvas/oauth"
+            "redirect_uri": "http://localhost:8000/canvas/oauth" if settings.DEBUG else "https://dash.canora.us/canvas/oauth"
         })
 
         resp = resp.json()
@@ -184,5 +187,7 @@ def oauth(request):
 
         ct.save()
         ct.prune_other_tokens()
+
+        canvas.init_course_names(request)
 
         return redirect('index')

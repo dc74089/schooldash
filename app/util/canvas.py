@@ -19,7 +19,7 @@ def init_course_names(request):
 
     resp = resp.json()
 
-    request.session['names'] = {item['id']: item['name'] for item in resp}
+    request.session['names'] = {item['id']: item['name'] for item in resp if 'name' in item}
     request.session.save()
 
     print(request.session['names'])

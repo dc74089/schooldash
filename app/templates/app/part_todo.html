@@ -3,9 +3,9 @@
     {% for item in todo %}
       <tr>
         <td>
-          <p style="margin-bottom: 8px;">{{ item.course }}</p>
-          <h4 style="margin-bottom: 8px">{{ item.assignment.name }}</h4>
-          <p>Due <b>{{ item.assignment.due_at }}</b></p>
+          <p style="margin-bottom: 2px;">{{ item.course }}</p>
+          <p style="margin-bottom: 2px; font-weight: bolder">{{ item.assignment.name }}</p>
+          <p style="margin-bottom: 0">Due {{ item.assignment.due_at }}</p>
         </td>
       </tr>
     {% endfor %}

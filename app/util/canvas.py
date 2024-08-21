@@ -108,13 +108,13 @@ def get_todo(request):
                 item['course'] = get_name(request, item['course_id'])
 
         return resp
-    except TypeError:
-        del request.session['access_token']
-        del request.session['refresh_token']
-
-        request.session.save()
-
-        return HttpResponseForbidden()
+    # except TypeError:
+    #     del request.session['access_token']
+    #     del request.session['refresh_token']
+    #
+    #     request.session.save()
+    #
+    #     return HttpResponseForbidden()
     except:
         return None
 

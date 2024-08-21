@@ -101,8 +101,11 @@ def get_todo(request):
         resp = resp.json()
 
         for item in resp:
-            item['assignment']['due_at'] = parse(item['assignment']['due_at']).date()
-            item['course'] = get_name(request, item['course_id'])
+            if 'assignment' in item and'due_at' in item['assignment']:
+                item['assignment']['due_at'] = parse(item['assignment']['due_at']).date()
+
+            if 'course' in item:
+                item['course'] = get_name(request, item['course_id'])
 
         return resp
     except TypeError:

@@ -86,6 +86,8 @@ def get_activity_stream(request):
         request.session.save()
 
         return HttpResponseForbidden()
+    except:
+        return None
 
 
 def get_todo(request):
@@ -110,6 +112,8 @@ def get_todo(request):
         request.session.save()
 
         return HttpResponseForbidden()
+    except:
+        return None
 
 
 def get_grades(request):
@@ -135,3 +139,5 @@ def get_grades(request):
         request.session.save()
 
         return HttpResponseForbidden()
+    except:
+        return None

@@ -64,7 +64,10 @@ def get_activity_stream(request):
         out = []
 
         for activity in resp:
-            if activity.get("read_state", False): continue
+            try:
+                if activity.get("read_state", False): continue
+            except:
+                continue
 
             if 'message' in activity and activity['message']:
                 activity['message'] = re.sub("<script.*/script>", '', activity['message'])

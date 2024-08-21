@@ -1,6 +1,7 @@
 import os
 import re
 from datetime import timedelta
+from pprint import pprint
 
 import requests
 from dateutil.parser import parse
@@ -100,23 +101,24 @@ def get_todo(request):
 
         resp = resp.json()
 
+        pprint(resp)
+
         for item in resp:
             if 'assignment' in item and'due_at' in item['assignment']:
-                item['assignment']['due_at'] = parse(item['assignment']['due_at']).date()
+                if item['assignment']['due_at']:
+                    item['assignment']['due_at'] = parse(item['assignment']['due_at']).date()
 
             if 'course' in item:
                 item['course'] = get_name(request, item['course_id'])
 
         return resp
-    # except TypeError:
-    #     del request.session['access_token']
-    #     del request.session['refresh_token']
-    #
-    #     request.session.save()
-    #
-    #     return HttpResponseForbidden()
-    except:
-        return None
+    except TypeError:
+        del request.session['access_token']
+        del request.session['refresh_token']
+
+        request.session.save()
+
+        return HttpResponseForbidden()
 
 
 def get_grades(request):

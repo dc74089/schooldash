@@ -5,7 +5,10 @@
         <td>
           <p style="margin-bottom: 2px;">{{ item.course }}</p>
           <p style="margin-bottom: 2px; font-weight: bolder">{{ item.assignment.name }}</p>
-          <p style="margin-bottom: 0">Due {{ item.assignment.due_at }}</p>
+
+          {% if item.assignment.due_at %}
+            <p style="margin-bottom: 0">Due {{ item.assignment.due_at }}</p>
+          {% endif %}
         </td>
       </tr>
     {% endfor %}

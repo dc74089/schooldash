@@ -6,7 +6,13 @@
           <p style="margin-bottom: 2px;">{{ item.course }}</p>
           <p style="margin-bottom: 2px; font-weight: bolder">{{ item.assignment.name }}</p>
 
-          {% if item.assignment.due_at %}
+          {% if item.needs_grading_count %}
+            <p style="margin-bottom: 0">
+              {{ item.needs_grading_count }}
+              need{% if item.needs_grading_count == 1 %}s{% endif %}
+              grading
+            </p>
+          {% elif item.assignment.due_at %}
             <p style="margin-bottom: 0">Due {{ item.assignment.due_at }}</p>
           {% endif %}
         </td>

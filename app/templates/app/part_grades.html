@@ -1,15 +1,16 @@
 <table class="table todo">
+{{ grades | pprint }}
   {% for item in grades %}
     <tr>
       <th>{{ item.name }}</th>
       <th>
-        {% if item.enrollments.0.computed_current_score or item.enrollments.0.computed_current_grade %}
-          {% if item.enrollments.0.computed_current_score %}
-            {{ item.enrollments.0.computed_current_score }}%
+        {% if item.enrollments.0.current_period_computed_current_score or item.enrollments.0.current_period_computed_current_grade %}
+          {% if item.enrollments.0.current_period_computed_current_score %}
+            {{ item.enrollments.0.current_period_computed_current_score }}%
           {% endif %}
 
-          {% if item.enrollments.0.computed_current_grade %}
-            ({{ item.enrollments.0.computed_current_grade }})
+          {% if item.enrollments.0.current_period_computed_current_grade %}
+            ({{ item.enrollments.0.current_period_computed_current_grade }})
           {% endif %}
         {% else %}
           Grade Not Found

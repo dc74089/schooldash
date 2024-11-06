@@ -339,6 +339,8 @@
                           </tr>
                         {% endfor %}
                       </table>
+                    {% elif special_schedule_link %}
+                        <p><a href="{{ special_schedule_link }}" target="_blank">Click Here to see Today's Schedule</a></p>
                     {% else %}
                       {% if weekend %}
                         <p>Happy Weekend!</p>

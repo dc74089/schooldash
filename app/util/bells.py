@@ -217,3 +217,14 @@ def get_schedule_name():
             return "Thursday -- Odd Periods"
         else:
             return None
+
+
+def get_special_schedule_link():
+    soq = ScheduleOverride.objects.filter(date=timezone.now().astimezone(settings.EST).date())
+
+    if soq.exists():
+        override: ScheduleOverride = soq.first()
+
+        if override.schedule_link:
+            return override.schedule_link
+        

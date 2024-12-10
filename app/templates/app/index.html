@@ -7,19 +7,7 @@
 
   <title>My LHP Homepage</title>
 
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X4M24L5NMK"></script>
-  <script>
-      window.dataLayer = window.dataLayer || [];
-
-      function gtag() {
-          dataLayer.push(arguments);
-      }
-
-      gtag('js', new Date());
-
-      gtag('config', 'G-X4M24L5NMK');
-  </script>
+  <script defer data-domain="dash.canora.us" event-grade="{{ grade }}" src="https://a.canora.us/js/script.outbound-links.pageview-props.js"></script>
 
   <meta name="theme-color" content="{{ primary }}">
   <link rel="icon" href="{% url 'favicon' %}?primary={{ primary | urlencode }}&secondary={{ secondary | urlencode }}">

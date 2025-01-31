@@ -32,6 +32,25 @@ def helper_build_menu(day):
         return {}
 
 
+def fling_menu():
+    try:
+        date = timezone.now().astimezone(timezone.get_default_timezone()).date()
+
+        resp = requests.get(
+            f"https://lhps.api.flikisdining.com/menu/api/weeks/school/charles-clayton-middle-school-campus-dining-hall/menu-type/breakfast/{str(date.year)}/{str(date.month).zfill(2)}/{str(date.day).zfill(2)}/"
+        ).json()
+
+        menu_today = {}
+
+        for day in resp['days']:
+            if date.strftime("%Y-%m-%d") == day['date']:
+                menu_today = helper_build_menu(day)
+
+        return menu_today
+
+    except:
+        return None
+
 def lunch_menu():
     try:
         date = timezone.now().astimezone(timezone.get_default_timezone()).date()

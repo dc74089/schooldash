@@ -11,7 +11,7 @@ from django.utils import timezone
 from app.models import CanvasToken
 from app.util import canvas, color
 from app.util.bells import get_bell_schedule, get_schedule_name, get_special_schedule_link
-from app.util.lunch import lunch_menu
+from app.util.lunch import lunch_menu, fling_menu
 
 
 def index(request):
@@ -84,6 +84,18 @@ def favicon(request):
         "primary": primary,
         "secondary": secondary,
     }, content_type="image/svg+xml")
+
+
+def fling(request):
+    fling = fling_menu()
+
+    if fling:
+        return render(request, "app/part_lunchmenu.html", {
+            "lunch_menu": fling
+        })
+
+    else:
+        return HttpResponseNotFound()
 
 
 def lunch(request):

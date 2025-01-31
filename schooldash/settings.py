@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'plausible_proxy',
     'app',
 ]
 
@@ -191,3 +192,8 @@ else:
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Analytics
+PLAUSIBLE_DOMAIN = "dash.canora.us"
+PLAUSIBLE_BASE_URL = "https://a.canora.us"

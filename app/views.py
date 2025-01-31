@@ -7,6 +7,7 @@ from django.conf import settings
 from django.http import HttpResponseNotFound, HttpResponseBase
 from django.shortcuts import render, redirect
 from django.utils import timezone
+from plausible_proxy import send_custom_event
 
 from app.models import CanvasToken
 from app.util import canvas, color
@@ -26,6 +27,17 @@ def index(request):
         if 'access_token' in request.session:
             canvas.do_refresh_if_needed(request)
 
+            send_custom_event(
+                request,
+                name="pageview",
+                props= {
+                    "grade": grade,
+                    "primary": primary,
+                    "secondary": secondary,
+                    "name": request.session.get('name'),
+                }
+            )
+
             return render(request, "app/index.html", {
                 "host": host,
                 "primary": primary,
@@ -43,6 +55,16 @@ def index(request):
                 "canvas_authed": True
             })
         else:
+            send_custom_event(
+                request,
+                name="pageview",
+                props= {
+                    "grade": grade,
+                    "primary": primary,
+                    "secondary": secondary
+                }
+            )
+
             return render(request, "app/index.html", {
                 "host": host,
                 "primary": primary,
@@ -192,6 +214,7 @@ def oauth(request):
         )
 
         userinfo_resp = userinfo_resp.json()
+        request.session['name'] = userinfo_resp.get('name')
 
         ct = CanvasToken(
             token=resp['access_token'],

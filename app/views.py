@@ -1,6 +1,6 @@
 import os
 import traceback
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 import requests
 from django.conf import settings
@@ -16,6 +16,9 @@ from app.util.lunch import lunch_menu, fling_menu
 
 
 def index(request):
+    if datetime.now() < datetime(2025, 8, 1):
+        return render(request, 'app/summer.html')
+
     try:
         host = 'http://localhost:8000' if settings.DEBUG else 'https://dash.canora.us'
         grade = int(request.session.get('grade', 0))

@@ -1,0 +1,43 @@
+{% load static %}
+
+<html>
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
+  <script>
+      function updateCountdown() {
+          const targetDate = new Date('August 14, 2025 08:00:00 EST');
+          const now = new Date();
+          const diff = targetDate - now;
+
+          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+          document.getElementById('countdown').innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+          updateCountdown();
+          setInterval(updateCountdown, 1000);
+      });
+  </script>
+
+  <style>
+    #countdown {
+        font-family: 'VT323', monospace;
+        font-size: 10vw;
+    }
+  </style>
+</head>
+
+<body style="background-color: #212137;">
+<div id="main" style="position:fixed; height: 100%; width: 100%; z-index: -9999;"></div>
+<div style="display:flex; justify-content: center; align-items: center; height: 100%; width: 100%; color: white">
+  <h1 id="countdown"></h1>
+</div>
+</body>
+</html>

@@ -17,9 +17,17 @@ from app.util.lunch import lunch_menu, fling_menu
 
 
 def index(request):
-    if datetime.now() < datetime(2025, 8, 1) and not settings.DEBUG:
-        return render(request, 'app/summer.html')
+    if datetime.now() < datetime(2025, 8, 1):
+        return summer(request)
+    else:
+        return dashboard(request)
 
+
+def summer(request):
+    return render(request, 'app/summer.html')
+
+
+def dashboard(request):
     try:
         host = 'http://localhost:8000' if settings.DEBUG else 'https://dash.canora.us'
         grade = int(request.session.get('grade', 0))
@@ -34,7 +42,7 @@ def index(request):
             send_custom_event(
                 request,
                 name="pageview",
-                props= {
+                props={
                     "grade": grade,
                     "primary": primary,
                     "secondary": secondary,
@@ -62,7 +70,7 @@ def index(request):
             send_custom_event(
                 request,
                 name="pageview",
-                props= {
+                props={
                     "grade": grade,
                     "primary": primary,
                     "secondary": secondary

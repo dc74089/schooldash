@@ -4,6 +4,7 @@ from datetime import datetime, time, date
 from pprint import pprint
 
 from django.http import HttpResponseBase
+from django.utils import timezone
 
 from app.util import lunch, canvas
 from app.util.bells import get_schedule_name, get_bell_schedule
@@ -55,17 +56,17 @@ def get_todo_summary(request):
     grade = int(request.session.get('grade', -1000))
 
     context['grade'] = grade
-    context['current-time'] = datetime.now().strftime("%I:%M %p")
-    context['current-date'] = datetime.now().strftime("%A %Y-%m-%d")
+    context['current-time'] = datetime.now().astimezone(timezone.get_default_timezone()).strftime("%I:%M %p")
+    context['current-date'] = datetime.now().astimezone(timezone.get_default_timezone()).strftime("%A %Y-%m-%d")
 
-    if datetime.now().time() < time(15):  # It's still during the day so schedule is relevant
+    if datetime.now().astimezone(timezone.get_default_timezone()).time() < time(15):  # It's still during the day so schedule is relevant
         context['bell-schedule-name'] = get_schedule_name()
         context['bell-schedule-data'] = get_bell_schedule(grade)
 
-    if datetime.now().time() < time(10):
+    if datetime.now().astimezone(timezone.get_default_timezone()).time() < time(10):
         context['fling-menu'] = lunch.fling_menu()
 
-    if datetime.now().time() < time(12, 30):
+    if datetime.now().astimezone(timezone.get_default_timezone()).time() < time(12, 30):
         context['lunch-menu'] = lunch.lunch_menu()
 
     if 'access_token' in request.session:  # Canvas is (probably) authed

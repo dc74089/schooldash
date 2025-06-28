@@ -4,15 +4,16 @@ from datetime import timedelta, datetime
 
 import requests
 from django.conf import settings
-from django.http import HttpResponseNotFound, HttpResponseBase
+from django.http import HttpResponseNotFound, HttpResponseBase, HttpResponse
 from django.shortcuts import render, redirect
 from django.utils import timezone
+from markdown_it import MarkdownIt
 from plausible_proxy import send_custom_event
 
 from app.models import CanvasToken
-from app.util import canvas, color
+from app.util import canvas, color, openai
 from app.util.bells import get_bell_schedule, get_schedule_name, get_special_schedule_link
-from app.util.lunch import lunch_menu, fling_menu, mock_menu
+from app.util.lunch import lunch_menu, fling_menu
 
 
 def index(request):
@@ -126,9 +127,6 @@ def fling(request):
 def lunch(request):
     lunch = lunch_menu()
 
-    if not lunch and settings.MOCK:
-        lunch = mock_menu()
-
     if lunch:
         return render(request, "app/part_lunchmenu.html", {
             "lunch_menu": lunch
@@ -169,6 +167,15 @@ def grades(request):
     return render(request, "app/part_grades.html", {
         "grades": resp
     })
+
+
+def ai_summary(request):
+    summary = openai.get_todo_summary(request)
+
+    md = MarkdownIt()
+    out = md.render(summary)
+
+    return HttpResponse(out)
 
 
 def config(request):

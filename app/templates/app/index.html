@@ -93,6 +93,16 @@
           })
       }
 
+      function get_ai_summary() {
+          $.get("{% url 'ai_summary' %}", function (data) {
+              $("#ai_container").show()
+              $("#ai-summary").html(data)
+              $("#ai-spinner").hide()
+          }).fail(function (obj) {
+              $("#ai_container").hide()
+          })
+      }
+
       function all_long_running() {
           get_fling()
           get_lunch()
@@ -102,6 +112,8 @@
               get_grades()
               get_todo()
           }
+
+          get_ai_summary()
 
           setTimeout(all_long_running, 1000 * 60 * 5);
       }
@@ -282,6 +294,10 @@
           max-width: 100%;
       }
 
+      #ai-summary li {
+          margin-bottom: 0.5rem;
+      }
+
       .fab {
           position: fixed;
           bottom: 20px;
@@ -339,7 +355,8 @@
                         {% endfor %}
                       </table>
                     {% elif special_schedule_link %}
-                        <p><a href="{{ special_schedule_link }}" target="_blank">Click Here to see Today's Schedule</a></p>
+                      <p><a href="{{ special_schedule_link }}" target="_blank">Click Here to see Today's Schedule</a>
+                      </p>
                     {% else %}
                       {% if weekend %}
                         <p>Happy Weekend!</p>
@@ -395,6 +412,16 @@
               <span id="hour"></span>:<span id="minute"></span><span style="color: #808080">:<span
                     id="second"></span></span>
             </h1>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <h2>Today's Summary</h2>
+            <hr/>
+            <p id="ai-summary" class=""></p>
+            <div class="spinner-border" role="status" id="ai-spinner">
+              <span class="visually-hidden">Loading...</span>
+            </div>
           </div>
         </div>
         {% if canvas_authed %}
@@ -481,8 +508,8 @@
                  onclick="palette('#4af626', '#000000')">Terminal</a>
               <a href="#" class="btn mx-1" style="background-color: #363535; color: #F5825B; border-color: white"
                  onclick="palette('#F5825B', '#363535')">Volcano</a>
-{#              <a href="#" class="btn mx-1" style="background-color: #1a1a1a; color: #ff7518; border-color: white"#}
-{#                 onclick="palette('#ff7518', '#1a1a1a')">Hallow</a>#}
+              {#              <a href="#" class="btn mx-1" style="background-color: #1a1a1a; color: #ff7518; border-color: white"#}
+              {#                 onclick="palette('#ff7518', '#1a1a1a')">Hallow</a>#}
               <a href="#" class="btn mx-1" style="background-color: #311834; color: #b06fb8; border-color: white"
                  onclick="palette('#b06fb8', '#311834')">Bekka</a>
               <a href="#" class="btn mx-1" style="background-color: #F0EDCC; color: #021f26; border-color: black"

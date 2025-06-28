@@ -219,7 +219,10 @@ def get_schedule_name():
         elif today.weekday() == 3:
             return "Thursday -- Odd Periods"
         else:
-            return None
+            if settings.MOCK:
+                return "M/T/F Schedule -- All Classes"
+            else:
+                return None
 
 
 def get_special_schedule_link():

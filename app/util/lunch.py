@@ -3,6 +3,8 @@ from datetime import timedelta
 import requests
 from django.utils import timezone
 
+from schooldash import settings
+
 
 def helper_build_menu(day):
     try:
@@ -46,10 +48,17 @@ def fling_menu():
             if date.strftime("%Y-%m-%d") == day['date']:
                 menu_today = helper_build_menu(day)
 
-        return menu_today
+        if not settings.MOCK or menu_today:
+            return menu_today
+        else:
+            return mock_menu()
 
     except:
-        return None
+        if settings.MOCK:
+            return mock_breakfast_menu()
+        else:
+            return None
+
 
 def lunch_menu():
     try:
@@ -65,12 +74,21 @@ def lunch_menu():
             if date.strftime("%Y-%m-%d") == day['date']:
                 menu_today = helper_build_menu(day)
 
-        return menu_today
+        if not settings.MOCK or menu_today:
+            return menu_today
+        else:
+            return mock_menu()
 
     except:
-        return None
+        if settings.MOCK:
+            return mock_menu()
+        else:
+            return None
     
     
+    
+
+
 def mock_menu():
     return {
         "Main Dishes": [
@@ -86,5 +104,25 @@ def mock_menu():
         ],
         "Dessert": [
             "Chocolate Brownie"
+        ]
+    }
+
+def mock_breakfast_menu():
+    return {
+        "Hot Items": [
+            "Scrambled Eggs",
+            "French Toast",
+            "Bacon Strips",
+            "Hash Browns"
+        ],
+        "Cold Items": [
+            "Assorted Cereals",
+            "Fresh Fruit",
+            "Yogurt Parfait"
+        ],
+        "Beverages": [
+            "Orange Juice",
+            "Apple Juice",
+            "Milk"
         ]
     }

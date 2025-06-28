@@ -9,6 +9,7 @@ urlpatterns = [
     path('noitf', views.notif, name='notif'),
     path('todo', views.todo, name='todo'),
     path('grades', views.grades, name='grades'),
+    path('ai', views.ai_summary, name='ai_summary'),
 
     path('config', views.config, name='config'),
     path('reset', views.reset, name='reset'),

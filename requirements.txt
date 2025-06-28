@@ -5,3 +5,5 @@ mysqlclient==2.2.4
 requests==2.31.0
 python-dateutil~=2.9.0.post0
 django-plausible-proxy~=0.5.1
+openai~=1.79.0
+markdown-it-py!=3.0.0

@@ -54,13 +54,19 @@ def get_todo_summary(request):
 
     grade = int(request.session.get('grade', -1000))
 
-    context['bell-schedule-name'] = get_schedule_name()
-    context['bell-schedule-data'] = get_bell_schedule(grade)
-    context['fling-menu'] = lunch.fling_menu()
-    context['lunch-menu'] = lunch.lunch_menu()
     context['grade'] = grade
     context['current-time'] = datetime.now().strftime("%I:%M %p")
     context['current-date'] = datetime.now().strftime("%A %Y-%m-%d")
+
+    if datetime.now().time() < time(15):  # It's still during the day so schedule is relevant
+        context['bell-schedule-name'] = get_schedule_name()
+        context['bell-schedule-data'] = get_bell_schedule(grade)
+
+    if datetime.now().time() < time(10):
+        context['fling-menu'] = lunch.fling_menu()
+
+    if datetime.now().time() < time(12, 30):
+        context['lunch-menu'] = lunch.lunch_menu()
 
     if 'access_token' in request.session:  # Canvas is (probably) authed
         try:

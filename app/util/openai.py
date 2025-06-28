@@ -4,8 +4,7 @@ from datetime import datetime, time, date
 from pprint import pprint
 
 from app.util import lunch, canvas
-from app.util.bells import get_schedule_name
-
+from app.util.bells import get_schedule_name, get_bell_schedule
 
 DEV_PROMPT = """
 You are a friendly and smart assistant for a middle school student dashboard. Using the context provided—such as the current time and date, schedule type, grade level, upcoming assignments, and meal menus—generate a brief and helpful summary of the student's day.
@@ -18,8 +17,19 @@ Your response must follow these rules:
 * If there’s a **group of assignments due soon**, briefly point that out and offer a quick, supportive time management tip.
 * If a **bell schedule** is present, assume it’s a school day. If not, assume it's a day off and tailor the tone accordingly.
 * If the `canvas-todo-list` is missing, do *not* assume the student has no assignments—just don’t reference it directly.
+* Use friendly names for schedule blocks. For instance, "Prime Time" instead of "PT", or "2nd Period" instead of "2".
+* Give information that will continue to be relevant for at least half an hour, as this dashboard does not refresh frequently.
 
-Keep the tone friendly, clear, and supportive. Speak directly to the student in plain language. Your goal is to help them feel prepared, not overwhelmed.
+You need to know the following to interpret the bell schedule:
+* The schedule is a tuple of tuples. Each inner tuple is the name of the period, the start time, and the end time.
+* PT stands for **Prime Time**, which is an optional time before and after every school day where students can visit teachers to ask questions or make-up assignments. They need an appointment with the teacher to take advantage of this time (make sure to include that fact if you encourage students to take advantage of prime time).
+* **Advisory** is our school's version of homeroom. 
+* Disco stands for **Discovery Groups**. During this time, students are assigned a different teacher each week, and they learn non-curricular lessons aligning with a personal passion of the teacher's.
+* Study stands for **Directed Study**, which is our school's version of study hall. Students report to their advisory teacher's classroom for this.
+
+Keep the tone friendly, clear, and supportive. Speak directly to the student in plain language with proper grammar. Your goal is to help them feel prepared, not overwhelmed.
+
+Here is the context:
 
 """
 
@@ -38,10 +48,13 @@ def datetime_handler(obj):
 def get_todo_summary(request):
     context = {}
 
+    grade = int(request.session.get('grade', -1000))
+
     context['bell-schedule-name'] = get_schedule_name()
+    context['bell-schedule-data'] = get_bell_schedule(grade)
     context['fling-menu'] = lunch.fling_menu()
     context['lunch-menu'] = lunch.lunch_menu()
-    context['grade'] = int(request.session.get('grade', -1000))
+    context['grade'] = grade
     context['current-time'] = datetime.now().strftime("%I:%M %p")
     context['current-date'] = datetime.now().strftime("%A %Y-%m-%d")
 
@@ -50,8 +63,6 @@ def get_todo_summary(request):
             context['canvas-todo-list'] = canvas.get_todo(request)
         except:
             pass
-
-    pprint(context)
 
     context_string = json.dumps(context, default=datetime_handler)
 

@@ -8,6 +8,7 @@ urlpatterns = [
     path('lunch', views.lunch, name='lunch'),
     path('noitf', views.notif, name='notif'),
     path('todo', views.todo, name='todo'),
+    path('missing', views.missing, name='missing'),
     path('grades', views.grades, name='grades'),
     path('ai', views.ai_summary, name='ai_summary'),
 

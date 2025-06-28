@@ -23,7 +23,7 @@ def init_course_names(request):
     request.session['names'] = {item['id']: item['name'] for item in resp if 'name' in item}
     request.session.save()
 
-    print(request.session['names'])
+    # print(request.session['names'])
 
 
 def get_name(request, course_id):
@@ -101,7 +101,7 @@ def get_todo(request):
 
         resp = resp.json()
 
-        pprint(resp)
+        # pprint(resp)
 
         for item in resp:
             if 'assignment' in item and'due_at' in item['assignment']:
@@ -112,6 +112,39 @@ def get_todo(request):
                 item['course'] = get_name(request, item['course_id'])
 
         return resp
+    except TypeError:
+        del request.session['access_token']
+        del request.session['refresh_token']
+
+        request.session.save()
+
+        return HttpResponseForbidden()
+
+
+def get_missing(request):
+    try:
+        do_refresh_if_needed(request)
+
+        resp = requests.get("https://lhps.instructure.com/api/v1/users/self/missing_submissions?filter[]=submittable&include[]=course", headers={
+            "Authorization": f"Bearer {request.session['access_token']}"
+        })
+
+        resp = resp.json()
+
+        # pprint(resp)
+
+        for item in resp:
+            if 'due_at' in item:
+                if item['due_at']:
+                    item['due_at'] = parse(item['due_at']).date()
+
+            if 'course' in item:
+                item['course'] = get_name(request, item['course_id'])
+
+        # pprint(resp)
+
+        return resp
+
     except TypeError:
         del request.session['access_token']
         del request.session['refresh_token']

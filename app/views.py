@@ -158,6 +158,17 @@ def todo(request):
     })
 
 
+def missing(request):
+    resp = canvas.get_missing(request)
+
+    if isinstance(resp, HttpResponseBase):
+        return resp
+
+    return render(request, "app/part_missing.html", {
+        "todo": resp
+    })
+
+
 def grades(request):
     resp = canvas.get_grades(request)
 

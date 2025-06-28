@@ -3,11 +3,13 @@ import os
 from datetime import datetime, time, date
 from pprint import pprint
 
+from django.http import HttpResponseBase
+
 from app.util import lunch, canvas
 from app.util.bells import get_schedule_name, get_bell_schedule
 
 DEV_PROMPT = """
-You are a friendly and smart assistant for a middle school student dashboard. Using the context provided—such as the current time and date, schedule type, grade level, upcoming assignments, and meal menus—generate a brief and helpful summary of the student's day.
+You are a friendly and smart assistant for a middle school student dashboard. Using the context provided—such as the current time and date, schedule type, grade level, upcoming assignments, missing assignments, and meal menus—generate a brief and helpful summary of the student's day.
 
 Your response must follow these rules:
 
@@ -16,7 +18,7 @@ Your response must follow these rules:
 * **Avoid long lists.** For meals or assignments, mention just the highlights.
 * If there’s a **group of assignments due soon**, briefly point that out and offer a quick, supportive time management tip.
 * If a **bell schedule** is present, assume it’s a school day. If not, assume it's a day off and tailor the tone accordingly.
-* If the `canvas-todo-list` is missing, do *not* assume the student has no assignments—just don’t reference it directly.
+* If the `canvas-todo-list` or `canvas-missing-assignments` is empty or missing, do *not* assume the student has no assignments—just don’t reference it directly.
 * Use friendly names for schedule blocks. For instance, "Prime Time" instead of "PT", or "2nd Period" instead of "2".
 * Give information that will continue to be relevant for at least half an hour, as this dashboard does not refresh frequently.
 
@@ -42,6 +44,8 @@ def get_client():
 def datetime_handler(obj):
     if isinstance(obj, (datetime, time, date)):
         return obj.isoformat()
+    if isinstance(obj, HttpResponseBase):
+        return []
     raise TypeError(f"Object of type {type(obj)} is not JSON serializable")
 
 
@@ -61,6 +65,7 @@ def get_todo_summary(request):
     if 'access_token' in request.session:  # Canvas is (probably) authed
         try:
             context['canvas-todo-list'] = canvas.get_todo(request)
+            context['canvas-missing-assignments'] = canvas.get_missing(request)
         except:
             pass
 

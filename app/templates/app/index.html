@@ -94,7 +94,11 @@
       }
 
       function get_missing() {
-          $.get("{% url 'missing' %}", function (data) {
+          $.get("{% url 'missing' %}", function (data, textStatus, jqXHR) {
+              if (jqXHR.status == 204) {
+                  $("#missing_card").hide()
+              }
+
               $("#missing_container").html(data)
           }).fail(function (obj) {
               if (obj.status == 403 && !reloading) {
@@ -457,7 +461,7 @@
               <div id="todo_container">Loading...</div>
             </div>
           </div>
-          <div class="card">
+          <div class="card" id="missing_card">
             <div class="card-body">
               <h2>Missing</h2>
               <hr/>

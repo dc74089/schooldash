@@ -5,7 +5,7 @@ from pprint import pprint
 
 import requests
 from dateutil.parser import parse
-from django.http.response import HttpResponseForbidden
+from django.http.response import HttpResponseForbidden, HttpResponse
 from django.utils import timezone
 
 
@@ -142,6 +142,9 @@ def get_missing(request):
                 item['course'] = get_name(request, item['course_id'])
 
         # pprint(resp)
+
+        if not resp:
+            return HttpResponse(status=204)
 
         return resp
 

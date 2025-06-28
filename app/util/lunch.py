@@ -69,3 +69,22 @@ def lunch_menu():
 
     except:
         return None
+    
+    
+def mock_menu():
+    return {
+        "Main Dishes": [
+            "Grilled Chicken Breast",
+            "Spaghetti and Meatballs",
+            "Vegetable Stir Fry"
+        ],
+        "Sides": [
+            "Steamed Rice",
+            "Roasted Vegetables",
+            "Garden Salad",
+            "Mashed Potatoes"
+        ],
+        "Dessert": [
+            "Chocolate Brownie"
+        ]
+    }

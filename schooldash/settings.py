@@ -21,6 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 DEBUG = not os.getenv("PROD", False)
 DOCKER = os.getenv("DOCKER", False)
+MOCK = DEBUG and True
 
 # SECURITY WARNING: keep the secret key used in production secret!
 if DOCKER and not DEBUG:

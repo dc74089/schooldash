@@ -183,7 +183,10 @@ def get_bell_schedule(grade):
         elif today.weekday() == 3:
             return thurs_8 if grade == 8 else thurs_7
         else:
-            return None
+            if settings.MOCK:
+                return normal_8 if grade == 8 else normal_7
+            else:
+                return None
 
 
 def get_schedule_name():

@@ -12,11 +12,11 @@ from plausible_proxy import send_custom_event
 from app.models import CanvasToken
 from app.util import canvas, color
 from app.util.bells import get_bell_schedule, get_schedule_name, get_special_schedule_link
-from app.util.lunch import lunch_menu, fling_menu
+from app.util.lunch import lunch_menu, fling_menu, mock_menu
 
 
 def index(request):
-    if datetime.now() < datetime(2025, 8, 1):
+    if datetime.now() < datetime(2025, 8, 1) and not settings.DEBUG:
         return render(request, 'app/summer.html')
 
     try:
@@ -125,6 +125,9 @@ def fling(request):
 
 def lunch(request):
     lunch = lunch_menu()
+
+    if not lunch and settings.MOCK:
+        lunch = mock_menu()
 
     if lunch:
         return render(request, "app/part_lunchmenu.html", {

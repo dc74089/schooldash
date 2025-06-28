@@ -51,7 +51,7 @@ def fling_menu():
         if not settings.MOCK or menu_today:
             return menu_today
         else:
-            return mock_menu()
+            return mock_breakfast_menu()
 
     except:
         if settings.MOCK:

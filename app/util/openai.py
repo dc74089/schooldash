@@ -31,7 +31,7 @@ You need to know the following to interpret the bell schedule:
 
 Keep the tone friendly, clear, and supportive. Speak directly to the student in plain language with proper grammar. Your goal is to help them feel prepared, not overwhelmed.
 
-Here is the context:
+The context will follow this message.
 
 """
 
@@ -75,9 +75,16 @@ def get_todo_summary(request):
 
     resp = client.responses.create(
         model="o4-mini",
-        input=DEV_PROMPT + context_string
+        input=[
+            {
+                "role": "developer",
+                "content": DEV_PROMPT
+            },
+            {
+                "role": "user",
+                "content": context_string,
+            }
+        ]
     )
 
     return resp.output_text
-
-

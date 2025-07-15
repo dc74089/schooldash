@@ -1,6 +1,6 @@
 import json
 import os
-from datetime import datetime, time, date
+from datetime import datetime, time, date, timedelta
 from pprint import pprint
 
 from django.http import HttpResponseBase
@@ -8,6 +8,8 @@ from django.utils import timezone
 
 from app.util import lunch, canvas
 from app.util.bells import get_schedule_name, get_bell_schedule
+
+EXPIRY = timedelta(minutes=30)
 
 DEV_PROMPT = """
 You are a friendly and smart assistant for a middle school student dashboard. Using the context provided—such as the current time and date, schedule type, grade level, upcoming assignments, missing assignments, and meal menus—generate a brief and helpful summary of the student's day.
@@ -51,6 +53,10 @@ def datetime_handler(obj):
 
 
 def get_todo_summary(request):
+    sesh = request.session
+    if 'todo_summary' in sesh and datetime.now().timestamp() - sesh['todo_summary_time'] < EXPIRY.total_seconds():
+        return sesh['todo_summary']
+    
     context = {}
 
     grade = int(request.session.get('grade', -1000))
@@ -93,5 +99,8 @@ def get_todo_summary(request):
             }
         ]
     )
+    
+    sesh['todo_summary'] = resp.output_text
+    sesh['todo_summary_time'] = datetime.now().timestamp()
 
     return resp.output_text

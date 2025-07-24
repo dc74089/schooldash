@@ -65,10 +65,14 @@ def datetime_handler(obj):
 def get_todo_summary(request):
     sesh = request.session
 
-    print(datetime.now().timestamp(), float(sesh.get('todo_summary_expires_at', 0)), datetime.now().timestamp() < float(sesh.get('todo_summary_expires_at', 0)))
+    print(
+        datetime.now().astimezone(timezone.get_default_timezone()).timestamp(),
+        float(sesh.get('todo_summary_expires_at', 0)),
+        datetime.now().astimezone(timezone.get_default_timezone()).timestamp() < float(sesh.get('todo_summary_expires_at', 0))
+    )
 
     if 'todo_summary' in sesh and 'todo_summary_expires_at' in sesh \
-            and datetime.now().timestamp() < float(sesh['todo_summary_expires_at']):
+            and datetime.now().astimezone(timezone.get_default_timezone()).timestamp() < float(sesh['todo_summary_expires_at']):
         return sesh['todo_summary']
 
     context = {}

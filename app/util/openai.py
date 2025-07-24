@@ -8,6 +8,7 @@ from django.http import HttpResponseBase
 from django.utils import timezone
 from pydantic import BaseModel
 
+from app.models import AiSummaryLog
 from app.util import lunch, canvas
 from app.util.bells import get_schedule_name, get_bell_schedule
 
@@ -122,7 +123,17 @@ def get_todo_summary(request):
     )
 
     sesh['todo_summary'] = resp.output_parsed.output_text
-    sesh['todo_summary_expires_at'] = resp.output_parsed.expires_at
-    sesh['todo_summary_time'] = datetime.now().timestamp()
+    sesh['todo_summary_expires_at'] = min(float(resp.output_parsed.expires_at), datetime.now().astimezone(timezone.get_default_timezone()).timestamp() + EXPIRY.total_seconds())
+    sesh['todo_summary_time'] = datetime.now().astimezone(timezone.get_default_timezone()).timestamp()
+
+    log = AiSummaryLog(
+        summary=resp.output_parsed.output_text,
+        expires=datetime.fromtimestamp(float(resp.output_parsed.expires_at), timezone.get_default_timezone()),
+        generated=datetime.now().astimezone(timezone.get_default_timezone()),
+        context=context_string,
+        person_id=request.session.get('canvas_uid', -1)
+    )
+
+    log.save()
 
     return resp.output_parsed.output_text

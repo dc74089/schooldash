@@ -247,6 +247,7 @@ def oauth(request):
 
         userinfo_resp = userinfo_resp.json()
         request.session['name'] = userinfo_resp.get('name')
+        request.session['canvas_uid'] = userinfo_resp.get('id')
 
         ct = CanvasToken(
             token=resp['access_token'],

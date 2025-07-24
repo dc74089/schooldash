@@ -61,3 +61,11 @@ class CanvasToken(models.Model):
         if tq.count() > 2:
             for tok in tq:
                 tok.refresh_and_delete()
+
+
+class AiSummaryLog(models.Model):
+    summary = models.TextField()
+    generated = models.DateTimeField()
+    expires = models.DateTimeField()
+    person_id = models.CharField(max_length=100)
+    context = models.TextField()

@@ -15,6 +15,17 @@ schedules = (
 )
 
 
+class FeatureFlag(models.Model):
+    name = models.CharField(max_length=100)
+    enabled = models.BooleanField(default=False)
+
+    def __bool__(self):
+        return self.enabled
+
+    def __str__(self):
+        return self.name
+
+
 class ScheduleOverride(models.Model):
     date = models.DateField()
     schedule = models.CharField(max_length=20, choices=schedules)
@@ -69,3 +80,6 @@ class AiSummaryLog(models.Model):
     expires = models.DateTimeField()
     person_id = models.CharField(max_length=100)
     context = models.TextField()
+
+    def __str__(self):
+        return f"{self.person_id} - {self.generated}"

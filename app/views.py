@@ -3,6 +3,7 @@ import traceback
 from datetime import timedelta, datetime
 
 import requests
+from canvasapi.feature import Feature
 from django.conf import settings
 from django.http import HttpResponseNotFound, HttpResponseBase, HttpResponse
 from django.shortcuts import render, redirect
@@ -10,7 +11,7 @@ from django.utils import timezone
 from markdown_it import MarkdownIt
 from plausible_proxy import send_custom_event
 
-from app.models import CanvasToken
+from app.models import CanvasToken, FeatureFlag
 from app.util import canvas, color, openai
 from app.util.bells import get_bell_schedule, get_schedule_name, get_special_schedule_link
 from app.util.lunch import lunch_menu, fling_menu
@@ -35,6 +36,8 @@ def dashboard(request):
         secondary = request.session.get('secondary', "#212137")
         pri_dark = color.is_dark(primary)
         sec_dark = color.is_dark(secondary)
+        ai_enabled_authed, _ = FeatureFlag.objects.get_or_create(name="ai_enabled_authed")
+        ai_enabled_unauthed, _ = FeatureFlag.objects.get_or_create(name="ai_enabled_without_auth")
 
         if 'access_token' in request.session:
             canvas.do_refresh_if_needed(request)
@@ -64,7 +67,8 @@ def dashboard(request):
                 "special_schedule_link": get_special_schedule_link(),
                 "schedule_name": get_schedule_name(),
                 "weekend": timezone.now().weekday() in (5, 6),
-                "canvas_authed": True
+                "canvas_authed": True,
+                "ai_enabled": ai_enabled_authed,
             })
         else:
             send_custom_event(
@@ -102,7 +106,8 @@ def dashboard(request):
                     "url:GET|/api/v1/announcements",
                     "url:GET|/api/v1/users/self/course_nicknames",
                     "url:GET|/api/v1/courses",
-                ))
+                )),
+                "ai_enabled": ai_enabled_unauthed,
             })
     except:
         print(traceback.format_exc())

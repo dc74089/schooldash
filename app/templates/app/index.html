@@ -108,15 +108,17 @@
           })
       }
 
-      function get_ai_summary() {
-          $.get("{% url 'ai_summary' %}", function (data) {
-              $("#ai_container").show()
-              $("#ai-summary").html(data)
-              $("#ai-spinner").hide()
-          }).fail(function (obj) {
-              $("#ai_container").hide()
-          })
-      }
+      {% if ai_enabled %}
+          function get_ai_summary() {
+              $.get("{% url 'ai_summary' %}", function (data) {
+                  $("#ai_container").show()
+                  $("#ai-summary").html(data)
+                  $("#ai-spinner").hide()
+              }).fail(function (obj) {
+                  $("#ai_container").hide()
+              })
+          }
+      {% endif %}
 
       function all_long_running() {
           get_fling()
@@ -129,7 +131,9 @@
               get_missing()
           }
 
-          get_ai_summary()
+          {% if ai_enabled %}
+              get_ai_summary()
+          {% endif %}
 
           setTimeout(all_long_running, 1000 * 60 * 5);
       }
@@ -430,16 +434,18 @@
             </h1>
           </div>
         </div>
-        <div class="card">
-          <div class="card-body">
-            <h2>Today's Summary</h2>
-            <hr/>
-            <p id="ai-summary" class=""></p>
-            <div class="spinner-border" role="status" id="ai-spinner">
-              <span class="visually-hidden">Loading...</span>
+        {% if ai_enabled %}
+          <div class="card">
+            <div class="card-body">
+              <h2>Today's Summary</h2>
+              <hr/>
+              <p id="ai-summary" class=""></p>
+              <div class="spinner-border" role="status" id="ai-spinner">
+                <span class="visually-hidden">Loading...</span>
+              </div>
             </div>
           </div>
-        </div>
+        {% endif %}
         {% if canvas_authed %}
           <div class="card">
             <div class="card-body">

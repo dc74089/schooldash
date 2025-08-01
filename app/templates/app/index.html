@@ -437,7 +437,10 @@
         {% if ai_enabled %}
           <div class="card" id="ai_container">
             <div class="card-body">
-              <h2>Today's Summary</h2>
+              <div class="d-flex w-100 justify-content-between">
+                <h2>Today's Summary</h2>
+                <p class="text-end small mb-0" style="color: #808080 !important;">AI Summary might get things wrong.<br/>Problems? Contact Tr. Canora.</p>
+              </div>
               <hr/>
               <p id="ai-summary" class=""></p>
               <div class="spinner-border" role="status" id="ai-spinner">

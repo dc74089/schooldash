@@ -4,6 +4,7 @@ from datetime import datetime, time, date, timedelta
 from pprint import pprint
 
 from dateutil.parser import parse
+from django.conf import settings
 from django.http import HttpResponseBase
 from django.utils import timezone
 from pydantic import BaseModel
@@ -27,6 +28,7 @@ You are a friendly, smart assistant writing a short summary message for a middle
 
 * Your response must be **exactly three concise Markdown bullet points** (using `*`), each highlighting timely, useful information.
 * Include an `expires_at` field with each response—use an POSIX timestamp that reflects when the message will no longer be valid (e.g. the end of the current class period).
+* Do not include the `expires_at` field in the `output_text`.
 * Mention **breakfast only early in the day**, and **lunch only if it's still upcoming**. Skip meals that have likely already happened.
 * Avoid long lists—only highlight key items (e.g. one or two assignments or meal items).
 * If several assignments are due soon, say so and include a brief, encouraging time management tip.
@@ -72,7 +74,7 @@ def get_todo_summary(request):
         datetime.now().astimezone(timezone.get_default_timezone()).timestamp() < float(sesh.get('todo_summary_expires_at', 0))
     )
 
-    if 'todo_summary' in sesh and 'todo_summary_expires_at' in sesh \
+    if not settings.DEBUG and 'todo_summary' in sesh and 'todo_summary_expires_at' in sesh \
             and datetime.now().astimezone(timezone.get_default_timezone()).timestamp() < float(sesh['todo_summary_expires_at']):
         return sesh['todo_summary']
 
@@ -108,7 +110,7 @@ def get_todo_summary(request):
     client = get_client()
 
     resp = client.responses.parse(
-        model="o4-mini",
+        model=settings.OPENAI_MODEL,
         input=[
             {
                 "role": "developer",

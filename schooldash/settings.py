@@ -23,6 +23,8 @@ DEBUG = not os.getenv("PROD", False)
 DOCKER = os.getenv("DOCKER", False)
 MOCK = DEBUG and True
 
+OPENAI_MODEL = "gpt-4.1-mini"
+
 # SECURITY WARNING: keep the secret key used in production secret!
 if DOCKER and not DEBUG:
     key_loc = "/app/secret/secret.key"

@@ -64,6 +64,9 @@ def get_activity_stream(request):
         resp = resp.json()
         out = []
 
+        if 'errors' in resp:
+            return force_logout(request)
+
         for activity in resp:
             try:
                 if activity.get("read_state", False): continue
@@ -81,12 +84,7 @@ def get_activity_stream(request):
 
         return out
     except TypeError:
-        del request.session['access_token']
-        del request.session['refresh_token']
-
-        request.session.save()
-
-        return HttpResponseForbidden()
+        return force_logout(request)
     except:
         return None
 
@@ -103,6 +101,9 @@ def get_todo(request):
 
         # pprint(resp)
 
+        if 'errors' in resp:
+            return force_logout(request)
+
         for item in resp:
             if 'assignment' in item and'due_at' in item['assignment']:
                 if item['assignment']['due_at']:
@@ -113,12 +114,7 @@ def get_todo(request):
 
         return resp
     except TypeError:
-        del request.session['access_token']
-        del request.session['refresh_token']
-
-        request.session.save()
-
-        return HttpResponseForbidden()
+        return force_logout(request)
 
 
 def get_missing(request):
@@ -132,6 +128,9 @@ def get_missing(request):
         resp = resp.json()
 
         # pprint(resp)
+
+        if 'errors' in resp:
+            return force_logout(request)
 
         for item in resp:
             if 'due_at' in item:
@@ -149,12 +148,7 @@ def get_missing(request):
         return resp
 
     except TypeError:
-        del request.session['access_token']
-        del request.session['refresh_token']
-
-        request.session.save()
-
-        return HttpResponseForbidden()
+        return force_logout(request)
 
 
 def get_grades(request):
@@ -172,13 +166,20 @@ def get_grades(request):
 
         resp = resp.json()
 
+        if 'errors' in resp:
+            return force_logout(request)
+
         return resp
     except TypeError:
-        del request.session['access_token']
-        del request.session['refresh_token']
-
-        request.session.save()
-
-        return HttpResponseForbidden()
+        return force_logout(request)
     except:
         return None
+
+
+def force_logout(request):
+    del request.session['access_token']
+    del request.session['refresh_token']
+
+    request.session.save()
+
+    return HttpResponseForbidden()

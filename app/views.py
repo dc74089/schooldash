@@ -11,7 +11,7 @@ from django.utils import timezone
 from markdown_it import MarkdownIt
 from plausible_proxy import send_custom_event
 
-from app.models import CanvasToken, FeatureFlag
+from app.models import CanvasToken, FeatureFlag, BetaUser
 from app.util import canvas, color, openai
 from app.util.bells import get_bell_schedule, get_schedule_name, get_special_schedule_link
 from app.util.lunch import lunch_menu, fling_menu
@@ -38,6 +38,8 @@ def dashboard(request):
         sec_dark = color.is_dark(secondary)
         ai_enabled_authed, _ = FeatureFlag.objects.get_or_create(name="ai_enabled_authed")
         ai_enabled_unauthed, _ = FeatureFlag.objects.get_or_create(name="ai_enabled_without_auth")
+        ai_enabled_beta, _ = FeatureFlag.objects.get_or_create(name="ai_enabled_for_beta")
+        this_student_is_beta = BetaUser.objects.filter(canvas_id=request.session.get('canvas_uid', -1)).exists()
 
         if 'access_token' in request.session:
             canvas.do_refresh_if_needed(request)
@@ -68,7 +70,7 @@ def dashboard(request):
                 "schedule_name": get_schedule_name(),
                 "weekend": timezone.now().weekday() in (5, 6),
                 "canvas_authed": True,
-                "ai_enabled": ai_enabled_authed,
+                "ai_enabled": ai_enabled_authed or (ai_enabled_beta and this_student_is_beta),
             })
         else:
             send_custom_event(

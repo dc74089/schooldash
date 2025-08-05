@@ -2,6 +2,7 @@ import os
 
 import requests
 from django.db import models
+from django.utils import timezone
 
 # Create your models here.
 schedules = (
@@ -90,4 +91,4 @@ class AiSummaryLog(models.Model):
     context = models.TextField()
 
     def __str__(self):
-        return f"{self.person_id} - {self.generated}"
+        return f"{self.person_id} - {self.generated.astimezone(timezone.get_default_timezone())}"

@@ -76,11 +76,13 @@ class CanvasToken(models.Model):
         self.delete()
 
     def prune_other_tokens(self):
-        tq = CanvasToken.objects.filter(person_id=self.person_id).exclude(token=self.token)
+        # tq = CanvasToken.objects.filter(person_id=self.person_id).exclude(token=self.token)
+        #
+        # if tq.count() > 2:
+        #     for tok in tq:
+        #         tok.refresh_and_delete()
 
-        if tq.count() > 2:
-            for tok in tq:
-                tok.refresh_and_delete()
+        return  # Disabled for now
 
 
 class AiSummaryLog(models.Model):

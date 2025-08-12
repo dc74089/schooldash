@@ -12,6 +12,14 @@ schedules = (
     ("early", "Early Dismissal"),
     ("amass", "AM Assembly"),
     ("pmass", "PM Assembly"),
+    ("A", "A Schedule"),
+    ("B", "B Schedule"),
+    ("C", "C Schedule"),
+    ("D", "D Schedule"),
+    ("E", "E Schedule"),
+    ("F", "F Schedule"),
+    ("G", "G Schedule"),
+    ("H", "H Schedule"),
     ("special", "Other"),
 )
 
@@ -40,12 +48,13 @@ class ScheduleOverride(models.Model):
     date = models.DateField()
     schedule = models.CharField(max_length=20, choices=schedules)
     schedule_link = models.TextField(null=True, blank=True)
+    school = models.CharField(max_length=5, null=False, blank=False, default="MS", choices=(("MS", "Middle School"), ("HS", "Upper School")))
 
     class Meta:
         ordering = ['-date']
 
     def __str__(self):
-        return f"{self.date}: {self.get_schedule_display()}"
+        return f"{self.date}: {self.get_school_display()} @ {self.get_schedule_display()}"
 
 
 class CanvasToken(models.Model):

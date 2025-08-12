@@ -76,7 +76,7 @@ def dashboard(request):
                 "grade": grade,
                 "bells": get_bell_schedule(grade),
                 "special_schedule_link": get_special_schedule_link(),
-                "schedule_name": get_schedule_name(),
+                "schedule_name": get_schedule_name(grade),
                 "weekend": timezone.now().weekday() in (5, 6),
                 "canvas_authed": True,
                 "ai_enabled": ai_enabled_authed or (ai_enabled_beta and ai_beta),
@@ -105,7 +105,7 @@ def dashboard(request):
                 "grade": grade,
                 "bells": get_bell_schedule(grade),
                 "special_schedule_link": get_special_schedule_link(),
-                "schedule_name": get_schedule_name(),
+                "schedule_name": get_schedule_name(grade),
                 "weekend": timezone.now().weekday() in (5, 6),
                 "canvas_authed": False,
                 "scopes": " ".join((
@@ -139,7 +139,9 @@ def favicon(request):
 
 
 def fling(request):
-    fling = fling_menu()
+    grade = request.GET.get('grade', 7)
+
+    fling = fling_menu(grade)
 
     if fling:
         return render(request, "app/part_lunchmenu.html", {
@@ -151,7 +153,9 @@ def fling(request):
 
 
 def lunch(request):
-    lunch = lunch_menu()
+    grade = request.GET.get('grade', 7)
+
+    lunch = lunch_menu(grade)
 
     if lunch:
         return render(request, "app/part_lunchmenu.html", {

@@ -34,7 +34,10 @@ def helper_build_menu(day):
         return {}
 
 
-def fling_menu():
+def fling_menu(grade):
+    if grade not in (7, 8):
+        return None
+
     try:
         date = timezone.now().astimezone(timezone.get_default_timezone()).date()
 
@@ -60,13 +63,18 @@ def fling_menu():
             return None
 
 
-def lunch_menu():
+def lunch_menu(grade):
     try:
         date = timezone.now().astimezone(timezone.get_default_timezone()).date()
 
-        resp = requests.get(
-            f"https://lhps.api.flikisdining.com/menu/api/weeks/school/charles-clayton-middle-school-campus-dining-hall/menu-type/lhp-us-lunch-available-daily-sides-651807093912170/{str(date.year)}/{str(date.month).zfill(2)}/{str(date.day).zfill(2)}/"
-        ).json()
+        if grade in (7, 8):
+            resp = requests.get(
+                f"https://lhps.api.flikisdining.com/menu/api/weeks/school/charles-clayton-middle-school-campus-dining-hall/menu-type/lhp-us-lunch-available-daily-sides-651807093912170/{str(date.year)}/{str(date.month).zfill(2)}/{str(date.day).zfill(2)}/"
+            ).json()
+        else:
+            resp = requests.get(
+                f"https://lhps.api.flikisdining.com/menu/api/weeks/school/grades-9-12/menu-type/lhp-us-lunch-available-daily-sides-651807093912170/{str(date.year)}/{str(date.month).zfill(2)}/{str(date.day).zfill(2)}/"
+            ).json()
 
         menu_today = {}
 

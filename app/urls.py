@@ -15,8 +15,8 @@ urlpatterns = [
     path('config', views.config, name='config'),
     path('reset', views.reset, name='reset'),
 
-    path('dev/sy', views.dashboard, name='reset'),
-    path('dev/summer', views.summer, name='reset'),
+    path('dev/sy', views.dashboard, name='dev_sy'),
+    path('dev/summer', views.summer, name='dev_summer'),
 
     path('canvas/oauth', views.oauth, name='canvas_oauth'),
     path('favicon.svg', views.favicon, name='favicon'),

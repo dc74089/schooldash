@@ -89,14 +89,14 @@ def get_todo_summary(request):
 
     if datetime.now().astimezone(timezone.get_default_timezone()).time() < time(
             15):  # It's still during the day so schedule is relevant
-        context['bell-schedule-name'] = get_schedule_name()
+        context['bell-schedule-name'] = get_schedule_name(grade)
         context['bell-schedule-data'] = get_bell_schedule(grade)
 
     if datetime.now().astimezone(timezone.get_default_timezone()).time() < time(10):
-        context['fling-menu'] = lunch.fling_menu()
+        context['fling-menu'] = lunch.fling_menu(grade)
 
     if datetime.now().astimezone(timezone.get_default_timezone()).time() < time(12, 30):
-        context['lunch-menu'] = lunch.lunch_menu()
+        context['lunch-menu'] = lunch.lunch_menu(grade)
 
     if 'access_token' in request.session:  # Canvas is (probably) authed
         try:

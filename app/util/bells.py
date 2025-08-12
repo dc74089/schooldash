@@ -149,12 +149,102 @@ pmass_8 = transform((
     ("PT", "14:50", "15:30"),
 ))
 
+us_A = transform((
+    ("PT", "7:40", "8:25"),
+    ("1", "8:30", "9:40"),
+    ("Unity/Clubs", "9:50", "11:00"),
+    ("4", "11:10", "12:20"),
+    ("HR", "12:30", "12:50"),
+    ("Lunch", "12:50", "13:35"),
+    ("5", "13:35", "14:45"),
+    ("PT", "14:50", "15:35"),
+))
+
+us_B = transform((
+    ("PT", "7:40", "8:25"),
+    ("1", "8:30", "9:40"),
+    ("3", "9:50", "11:00"),
+    ("2", "11:10", "12:20"),
+    ("HR", "12:30", "12:50"),
+    ("Lunch", "12:50", "13:35"),
+    ("6", "13:35", "14:45"),
+    ("PT", "14:50", "15:35"),
+))
+
+us_C = transform((
+    ("PT", "7:40", "8:25"),
+    ("2", "8:30", "9:40"),
+    ("3", "10:05", "11:15"),
+    ("4", "11:25", "12:35"),
+    ("Lunch", "12:35", "13:35"),
+    ("5", "13:35", "14:45"),
+    ("PT", "14:50", "15:35"),
+))
+
+us_D = transform((
+    ("PT", "7:40", "8:25"),
+    ("1", "8:30", "9:40"),
+    ("5", "9:50", "11:00"),
+    ("4", "11:10", "12:20"),
+    ("HR", "12:30", "12:50"),
+    ("Lunch", "12:50", "13:35"),
+    ("6", "13:35", "14:45"),
+    ("PT", "14:50", "15:35"),
+))
+
+us_E = transform((
+    ("PT", "7:40", "8:25"),
+    ("2", "8:30", "9:40"),
+    ("3", "9:50", "11:00"),
+    ("HR", "11:10", "11:25"),
+    ("Assembly", "11:35", "12:35"),
+    ("Lunch", "12:35", "13:35"),
+    ("6", "13:35", "14:45"),
+    ("PT", "14:50", "15:35"),
+))
+
+us_F = transform((
+    ("PT", "7:40", "8:25"),
+    ("1", "8:30", "9:40"),
+    ("3", "9:50", "11:00"),
+    ("2", "11:10", "12:20"),
+    ("HR", "12:30", "12:50"),
+    ("Lunch", "12:50", "13:35"),
+    ("4", "13:35", "12:50"),
+    ("PT", "14:50", "15:35"),
+))
+
+us_G = transform((
+    ("PT", "7:40", "8:25"),
+    ("2", "8:30", "9:40"),
+    ("3", "9:50", "11:00"),
+    ("5", "11:10", "12:20"),
+    ("HR", "12:30", "12:50"),
+    ("Lunch", "12:50", "13:35"),
+    ("6", "13:35", "12:50"),
+    ("PT", "14:50", "15:35"),
+))
+
+us_H = transform((
+    ("PT", "7:40", "8:25"),
+    ("1", "8:30", "9:15"),
+    ("4", "9:25", "10:10"),
+    ("3", "10:20", "11:05"),
+    ("2", "11:15", "12:00"),
+    ("5", "12:10", "12:55"),
+    ("Lunch", "12:55", "14:00"),
+    ("6", "14:00", "14:45"),
+    ("PT", "14:50", "15:35"),
+))
+
 
 def get_bell_schedule(grade):
     if grade:
         grade = int(grade)
 
-    soq = ScheduleOverride.objects.filter(date=timezone.now().astimezone(settings.EST).date())
+    school = "MS" if grade in (7, 8) else "US"
+
+    soq = ScheduleOverride.objects.filter(school=school, date=timezone.now().astimezone(settings.EST).date())
 
     if soq.exists():
         override: ScheduleOverride = soq.first()
@@ -171,26 +261,58 @@ def get_bell_schedule(grade):
             return amass_8 if grade == 8 else amass_7
         elif override.schedule == "pmass":
             return pmass_8 if grade == 8 else pmass_7
+        elif override.schedule == "A":
+            return us_A
+        elif override.schedule == "B":
+            return us_B
+        elif override.schedule == "C":
+            return us_C
+        elif override.schedule == "D":
+            return us_D
+        elif override.schedule == "E":
+            return us_E
+        elif override.schedule == "F":
+            return us_F
+        elif override.schedule == "G":
+            return us_G
+        elif override.schedule == "H":
+            return us_H
         else:
             return None
     else:
         today = timezone.now().astimezone(settings.EST).date()
 
-        if today.weekday() in (0, 1, 4):
-            return normal_8 if grade == 8 else normal_7
-        elif today.weekday() == 2:
-            return wed_8 if grade == 8 else wed_7
-        elif today.weekday() == 3:
-            return thurs_8 if grade == 8 else thurs_7
-        else:
-            if settings.MOCK:
+        if school == "MS":
+            if today.weekday() in (0, 1, 4):
                 return normal_8 if grade == 8 else normal_7
+            elif today.weekday() == 2:
+                return wed_8 if grade == 8 else wed_7
+            elif today.weekday() == 3:
+                return thurs_8 if grade == 8 else thurs_7
+            else:
+                if settings.MOCK:
+                    return normal_8 if grade == 8 else normal_7
+                else:
+                    return None
+        else:
+            if today.weekday() == 0:
+                return us_A
+            elif today.weekday() == 1:
+                return us_B
+            elif today.weekday() == 2:
+                return us_C
+            elif today.weekday() == 3:
+                return us_D
+            elif today.weekday() == 4:
+                return us_E
             else:
                 return None
 
 
-def get_schedule_name():
+def get_schedule_name(grade):
     soq = ScheduleOverride.objects.filter(date=timezone.now().astimezone(settings.EST).date())
+
+    school = "MS" if grade in (7, 8) else "US"
 
     if soq.exists():
         override: ScheduleOverride = soq.first()
@@ -207,20 +329,50 @@ def get_schedule_name():
             return "AM Assembly -- Even Periods"
         elif override.schedule == "pmass":
             return "PM Assembly -- Even Periods"
+        elif override.schedule == "A":
+            return "Schedule A"
+        elif override.schedule == "B":
+            return "Schedule B"
+        elif override.schedule == "C":
+            return "Schedule C"
+        elif override.schedule == "D":
+            return "Schedule D"
+        elif override.schedule == "E":
+            return "Schedule E"
+        elif override.schedule == "F":
+            return "Schedule F"
+        elif override.schedule == "G":
+            return "Schedule G"
+        elif override.schedule == "H":
+            return "Schedule H"
         else:
             return None
     else:
         today = timezone.now().astimezone(settings.EST).date()
 
-        if today.weekday() in (0, 1, 4):
-            return "M/T/F Schedule -- All Classes"
-        elif today.weekday() == 2:
-            return "Wednesday -- Even Periods"
-        elif today.weekday() == 3:
-            return "Thursday -- Odd Periods"
-        else:
-            if settings.MOCK:
+        if school == "MS":
+            if today.weekday() in (0, 1, 4):
                 return "M/T/F Schedule -- All Classes"
+            elif today.weekday() == 2:
+                return "Wednesday -- Even Periods"
+            elif today.weekday() == 3:
+                return "Thursday -- Odd Periods"
+            else:
+                if settings.MOCK:
+                    return "M/T/F Schedule -- All Classes"
+                else:
+                    return None
+        else:
+            if today.weekday() == 0:
+                return "Schedule A"
+            elif today.weekday() == 1:
+                return "Schedule B"
+            elif today.weekday() == 2:
+                return "Schedule C"
+            elif today.weekday() == 3:
+                return "Schedule D"
+            elif today.weekday() == 4:
+                return "Schedule E"
             else:
                 return None
 
@@ -233,4 +385,3 @@ def get_special_schedule_link():
 
         if override.schedule_link:
             return override.schedule_link
-        

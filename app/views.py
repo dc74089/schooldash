@@ -4,7 +4,6 @@ import traceback
 from datetime import timedelta, datetime
 
 import requests
-from canvasapi.feature import Feature
 from django.conf import settings
 from django.http import HttpResponseNotFound, HttpResponseBase, HttpResponse
 from django.shortcuts import render, redirect

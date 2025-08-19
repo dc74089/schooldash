@@ -65,7 +65,8 @@ def get_activity_stream(request):
         out = []
 
         if 'errors' in resp:
-            return force_logout(request)
+            pprint(resp)
+            # return force_logout(request)
 
         for activity in resp:
             try:
@@ -83,7 +84,8 @@ def get_activity_stream(request):
             out.append(activity)
 
         return out
-    except TypeError:
+    except TypeError as e:
+        print(e)
         return force_logout(request)
     except:
         return None
@@ -102,7 +104,8 @@ def get_todo(request):
         # pprint(resp)
 
         if 'errors' in resp:
-            return force_logout(request)
+            pprint(resp)
+            # return force_logout(request)
 
         for item in resp:
             if 'assignment' in item and'due_at' in item['assignment']:
@@ -113,7 +116,8 @@ def get_todo(request):
                 item['course'] = get_name(request, item['course_id'])
 
         return resp
-    except TypeError:
+    except TypeError as e:
+        print(e)
         return force_logout(request)
 
 
@@ -130,7 +134,8 @@ def get_missing(request):
         # pprint(resp)
 
         if 'errors' in resp:
-            return force_logout(request)
+            pprint(resp)
+            # return force_logout(request)
 
         for item in resp:
             if 'due_at' in item:
@@ -147,7 +152,8 @@ def get_missing(request):
 
         return resp
 
-    except TypeError:
+    except TypeError as e:
+        print(e)
         return force_logout(request)
 
 
@@ -167,10 +173,12 @@ def get_grades(request):
         resp = resp.json()
 
         if 'errors' in resp:
-            return force_logout(request)
+            pprint(resp)
+            # return force_logout(request)
 
         return resp
-    except TypeError:
+    except TypeError as e:
+        print(e)
         return force_logout(request)
     except:
         return None

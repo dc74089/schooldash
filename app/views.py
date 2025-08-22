@@ -153,7 +153,7 @@ def fling(request):
 
 
 def lunch(request):
-    grade = request.GET.get('grade', 7)
+    grade = int(request.GET.get('grade', 7))
 
     lunch = lunch_menu(grade)
 

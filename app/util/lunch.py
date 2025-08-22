@@ -69,7 +69,7 @@ def lunch_menu(grade):
 
         if grade in (7, 8):
             resp = requests.get(
-                f"https://lhps.flikisdining.com/menu/charles-clayton-middle-school-campus-dining-hall/lhp-us-lunch-available-daily-sides-651807093912170/{str(date.year)}/{str(date.month).zfill(2)}/{str(date.day).zfill(2)}/"
+                f"https://lhps.api.flikisdining.com/menu/api/weeks/school/charles-clayton-middle-school-campus-dining-hall/menu-type/lhp-us-lunch-available-daily-sides-651807093912170/{str(date.year)}/{str(date.month).zfill(2)}/{str(date.day).zfill(2)}/"
             ).json()
         else:
             resp = requests.get(

@@ -310,7 +310,12 @@ def get_bell_schedule(grade):
 
 
 def get_schedule_name(grade):
-    soq = ScheduleOverride.objects.filter(date=timezone.now().astimezone(settings.EST).date())
+    if grade:
+        grade = int(grade)
+
+    school = "MS" if grade in (7, 8) else "US"
+
+    soq = ScheduleOverride.objects.filter(school=school, date=timezone.now().astimezone(settings.EST).date())
 
     school = "MS" if grade in (7, 8) else "US"
 

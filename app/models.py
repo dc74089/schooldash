@@ -104,3 +104,26 @@ class AiSummaryLog(models.Model):
 
     def __str__(self):
         return f"{self.person_id} - {self.generated.astimezone(timezone.get_default_timezone())}"
+
+
+class CountdownEvent(models.Model):
+    name = models.CharField(max_length=100)
+    time = models.DateTimeField(null=False, blank=False)
+    all_grades = models.BooleanField(default=False)
+    grade = models.IntegerField(null=True, blank=True)
+
+    def user_string(self):
+        days = (self.time - timezone.now()).days
+        if days == 0:
+            return f"It's time for {self.name}!"
+        else:
+            return f"{days} days until {self.name}!"
+
+    def __str__(self):
+        if self.all_grades:
+            return f"{self.time.astimezone(timezone.get_default_timezone()).strftime('%Y-%m-%d')} - {self.name} (all grades)"
+        else:
+            return f"{self.time.astimezone(timezone.get_default_timezone()).strftime('%Y-%m-%d')} - {self.name} (grade {self.grade})"
+
+    class Meta:
+        ordering = ['-time']

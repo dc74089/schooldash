@@ -461,6 +461,10 @@
               <span id="hour"></span>:<span id="minute"></span><span style="color: #808080">:<span
                     id="second"></span></span>
             </h1>
+
+            {% if countdown %}
+              <h5 class="text-center">{{ countdown.user_string }}</h5>
+            {% endif %}
           </div>
         </div>
         {% if ai_enabled %}

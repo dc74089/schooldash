@@ -11,7 +11,7 @@ from django.utils import timezone
 from markdown_it import MarkdownIt
 from plausible_proxy import send_custom_event
 
-from app.models import CanvasToken, FeatureFlag, BetaUser
+from app.models import CanvasToken, FeatureFlag, BetaUser, CountdownEvent
 from app.util import canvas, color, openai
 from app.util.bells import get_bell_schedule, get_schedule_name, get_special_schedule_link
 from app.util.lunch import lunch_menu, fling_menu
@@ -40,6 +40,9 @@ def dashboard(request):
         ai_enabled_unauthed, _ = FeatureFlag.objects.get_or_create(name="ai_enabled_without_auth")
         ai_enabled_beta, _ = FeatureFlag.objects.get_or_create(name="ai_enabled_for_beta")
         ai_beta = BetaUser.objects.filter(canvas_id=request.session.get('canvas_uid', -1), ai=True).exists()
+
+        cq = CountdownEvent.objects.filter(grade=grade) | CountdownEvent.objects.filter(all_grades=True)
+        countdown = cq.exclude(time__lt=timezone.now()).order_by('time').first()
 
         sesh = dict(request.session)
         if 'access_token' in sesh:
@@ -81,6 +84,7 @@ def dashboard(request):
                 "canvas_authed": True,
                 "ai_enabled": ai_enabled_authed or (ai_enabled_beta and ai_beta),
                 "sesh": sesh,
+                "countdown": countdown
             })
         else:
             send_custom_event(
@@ -121,6 +125,7 @@ def dashboard(request):
                 )),
                 "ai_enabled": ai_enabled_unauthed,
                 "sesh": sesh,
+                "countdown": countdown,
             })
     except:
         print(traceback.format_exc())

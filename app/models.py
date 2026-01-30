@@ -116,6 +116,8 @@ class CountdownEvent(models.Model):
         days = (self.time - timezone.now()).days
         if days == 0:
             return f"It's time for {self.name}!"
+        elif days == 1:
+            return f"1 day until {self.name}!"
         else:
             return f"{days} days until {self.name}!"
 

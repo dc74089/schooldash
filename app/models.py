@@ -113,7 +113,7 @@ class CountdownEvent(models.Model):
     grade = models.IntegerField(null=True, blank=True)
 
     def user_string(self):
-        days = (self.time - timezone.now()).days
+        days = (self.time - timezone.now()).days + 1
         if days == 0:
             return f"It's time for {self.name}!"
         elif days == 1:

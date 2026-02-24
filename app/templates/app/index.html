@@ -29,6 +29,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
         rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap"
+        rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
         crossorigin="anonymous" referrerpolicy="no-referrer"/>
@@ -249,6 +251,9 @@
           ;
           filter: blur(0.7px);
           text-transform: lowercase;
+      {% elif primary.lower == '#4af626' %}
+          font-family: "Roboto Mono", monospace, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+          ;
       {% else %}
           font-family: "Roboto", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
           ;
@@ -588,8 +593,8 @@
                  onclick="palette('#FFCF4D', '#00330f')">Lalwani</a>
               <a href="#" class="btn mx-1" style="background-color: #F7F7F9; color: #D2302C; border-color: black"
                  onclick="palette('#D2302C', '#F7F7F9')">Candy Cane</a>
-              <a href="#" class="btn mx-1" style="background-color: #070952; color: #ef4da0; border-color: white"
-                 onclick="palette('#ef4da0', '#070952')">NavyPink</a>
+              <a href="#" class="btn mx-1" style="background-color: #dbf6ff; color: #1fc4e5; border-color: black"
+                 onclick="palette('#1fc4e5', '#dbf6ff')">Mylan</a>
               <a href="#" class="btn mx-1" style="background-color: #ed6f63; color: #2D2926; border-color: white"
                  onclick="palette('#2D2926', '#ed6f63')">Salmo Salar</a>
             </div>

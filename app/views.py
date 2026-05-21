@@ -18,7 +18,7 @@ from app.util.lunch import lunch_menu, fling_menu
 
 
 def index(request):
-    if datetime.now() < datetime(2025, 8, 14):
+    if datetime.now() < datetime(2026, 8, 12):
         return summer(request)
     else:
         return dashboard(request)

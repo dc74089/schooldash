@@ -6,6 +6,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('fling', views.fling, name='fling'),
     path('lunch', views.lunch, name='lunch'),
+    path('eink', views.eink_image, name='eink'),
     path('noitf', views.notif, name='notif'),
     path('todo', views.todo, name='todo'),
     path('missing', views.missing, name='missing'),

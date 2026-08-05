@@ -15,6 +15,7 @@ from app.models import CanvasToken, FeatureFlag, BetaUser, CountdownEvent
 from app.util import canvas, color, openai
 from app.util.bells import get_bell_schedule, get_schedule_name, get_special_schedule_link
 from app.util.lunch import lunch_menu, fling_menu
+from app.util import eink
 
 
 def index(request):
@@ -169,6 +170,21 @@ def lunch(request):
 
     else:
         return HttpResponseNotFound()
+
+
+def eink_image(request):
+    grade = int(request.GET.get('grade', 7))
+
+    today = timezone.now().astimezone(settings.EST).date()
+    bells = get_bell_schedule(grade)
+    schedule_name = get_schedule_name(grade)
+    lunch = lunch_menu(grade)
+
+    png = eink.render(schedule_name, bells, lunch, grade, today)
+
+    resp = HttpResponse(png, content_type="image/png")
+    resp["Cache-Control"] = "no-cache, max-age=0"
+    return resp
 
 
 def notif(request):

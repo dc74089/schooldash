@@ -72,7 +72,7 @@ def render(schedule_name, bells, lunch, grade, date):
 
     # --- Column geometry ------------------------------------------------------
     body_top = header_bottom + 14
-    col_divider = 430
+    col_divider = 320
     left_x = MARGIN
     left_right = col_divider - 20
     right_x = col_divider + 20
@@ -86,17 +86,24 @@ def render(schedule_name, bells, lunch, grade, date):
     y = body_top + 34
 
     if bells:
+        row_h = 30
+        pad = 5
+        # top border of the table
+        draw.line([(left_x, y), (left_right, y)], fill=BLACK, width=1)
         for label, start, end in bells:
-            draw.text((left_x, y), label, font=f_period, fill=BLACK)
+            text_y = y + pad
+            draw.text((left_x + 6, text_y), label, font=f_period, fill=BLACK)
             time_str = f"{_fmt_time(start)} – {_fmt_time(end)}"
             time_w = f_time.getlength(time_str)
-            draw.text((left_right - time_w, y), time_str, font=f_time, fill=BLACK)
-            y += 26
+            draw.text((left_right - 6 - time_w, text_y), time_str, font=f_time, fill=BLACK)
+            y += row_h
+            # separator line between this pairing and the next
+            draw.line([(left_x, y), (left_right, y)], fill=BLACK, width=1)
     else:
         draw.text((left_x, y), "No school today", font=f_item, fill=BLACK)
 
     # --- Right column: lunch --------------------------------------------------
-    draw.text((right_x, body_top), f"Lunch · Grade {grade}", font=f_col_title, fill=BLACK)
+    draw.text((right_x, body_top), "Lunch", font=f_col_title, fill=BLACK)
     y = body_top + 34
     bottom_limit = HEIGHT - MARGIN
 

@@ -187,6 +187,10 @@ def eink_image(request):
     return resp
 
 
+def eink_html(request):
+    return render(request, "app/eink_html.html")
+
+
 def notif(request):
     resp = canvas.get_activity_stream(request)
 

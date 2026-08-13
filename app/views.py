@@ -78,6 +78,7 @@ def dashboard(request):
                 "pri_dark": pri_dark,
                 "dark": sec_dark,
                 "grade": grade,
+                "time_format": request.session.get("time_format", "24"),
                 "bells": get_bell_schedule(grade),
                 "special_schedule_link": get_special_schedule_link(),
                 "schedule_name": get_schedule_name(grade),
@@ -108,6 +109,7 @@ def dashboard(request):
                 "pri_dark": pri_dark,
                 "dark": sec_dark,
                 "grade": grade,
+                "time_format": request.session.get("time_format", "24"),
                 "bells": get_bell_schedule(grade),
                 "special_schedule_link": get_special_schedule_link(),
                 "schedule_name": get_schedule_name(grade),
@@ -257,6 +259,9 @@ def config(request):
 
         if 'grade' in request.POST:
             request.session['grade'] = request.POST['grade']
+
+        if 'time_format' in request.POST:
+            request.session['time_format'] = request.POST['time_format']
 
     return redirect('index')
 

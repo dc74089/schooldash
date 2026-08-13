@@ -42,7 +42,12 @@
 
       function updateTime() {
           var date = new Date();
-          $('#hour').html(date.getHours())
+          let hours = date.getHours();
+          const format = "{{ time_format }}";
+          if (format === "12") {
+              hours = hours % 12 || 12;
+          }
+          $('#hour').html(hours)
           $('#minute').html(date.getMinutes().toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping: false}))
           $('#second').html(date.getSeconds().toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping: false}))
 
@@ -640,6 +645,12 @@
               <option value="10" {% if grade == 10 %}selected{% endif %}>10th Grade</option>
               <option value="11" {% if grade == 11 %}selected{% endif %}>11th Grade</option>
               <option value="12" {% if grade == 12 %}selected{% endif %}>12th Grade</option>
+            </select>
+            <hr/>
+            <h4>Time Format</h4>
+            <select name="time_format" class="form-control custom-select">
+              <option value="24" {% if time_format == "24" %}selected{% endif %}>24-hour</option>
+              <option value="12" {% if time_format == "12" %}selected{% endif %}>12-hour</option>
             </select>
 
           </div>

@@ -8,6 +8,7 @@ from django.conf import settings
 from django.http import HttpResponseNotFound, HttpResponseBase, HttpResponse
 from django.shortcuts import render, redirect
 from django.utils import timezone
+from django.views.decorators.clickjacking import xframe_options_exempt
 from markdown_it import MarkdownIt
 from plausible_proxy import send_custom_event
 
@@ -174,6 +175,7 @@ def lunch(request):
         return HttpResponseNotFound()
 
 
+@xframe_options_exempt
 def eink_image(request):
     grade = int(request.GET.get('grade', 7))
 
@@ -189,6 +191,7 @@ def eink_image(request):
     return resp
 
 
+@xframe_options_exempt
 def eink_html(request):
     return render(request, "app/eink_html.html")
 

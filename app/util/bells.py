@@ -382,8 +382,13 @@ def get_schedule_name(grade):
                 return None
 
 
-def get_special_schedule_link():
-    soq = ScheduleOverride.objects.filter(date=timezone.now().astimezone(settings.EST).date())
+def get_special_schedule_link(grade):
+    if grade:
+        grade = int(grade)
+
+    school = "MS" if grade in (7, 8) else "US"
+
+    soq = ScheduleOverride.objects.filter(date=timezone.now().astimezone(settings.EST).date(), school=school)
 
     if soq.exists():
         override: ScheduleOverride = soq.first()

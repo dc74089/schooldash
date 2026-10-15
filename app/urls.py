@@ -4,6 +4,7 @@ from app import views
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('schedule', views.schedule_json, name='schedule'),
     path('fling', views.fling, name='fling'),
     path('lunch', views.lunch, name='lunch'),
     path('eink', views.eink_image, name='eink'),

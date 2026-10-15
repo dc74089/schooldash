@@ -5,7 +5,7 @@ from datetime import timedelta, datetime
 
 import requests
 from django.conf import settings
-from django.http import HttpResponseNotFound, HttpResponseBase, HttpResponse
+from django.http import HttpResponseNotFound, HttpResponseBase, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -145,6 +145,16 @@ def favicon(request):
         "primary": primary,
         "secondary": secondary,
     }, content_type="image/svg+xml")
+
+
+def schedule_json(request):
+    grade = request.GET.get('grade', 7)
+
+    schedule = get_bell_schedule(grade)
+
+    return JsonResponse({
+        "schedule": schedule
+    }, safe=True)
 
 
 def fling(request):

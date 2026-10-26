@@ -134,6 +134,81 @@
           }
       {% endif %}
 
+      {% if cake %}
+        function confetti() {
+            $("#cake_message").stop(true).slideDown(400).delay(3000).slideUp(600)
+
+            const colors = ["{{ primary }}", "#ffd700", "#ff4d6d", "#4dabf7", "#69db7c", "#da77f2", "#ffa94d"]
+            const canvas = document.createElement("canvas")
+            canvas.style.cssText = "position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:9999;"
+            document.body.appendChild(canvas)
+
+            const ctx = canvas.getContext("2d")
+            const dpr = window.devicePixelRatio || 1
+            canvas.width = window.innerWidth * dpr
+            canvas.height = window.innerHeight * dpr
+            ctx.scale(dpr, dpr)
+
+            // Burst out of the cake
+            const rect = $(".cake")[0].getBoundingClientRect()
+            const originX = rect.left + rect.width / 2
+            const originY = rect.top + rect.height / 2
+
+            const pieces = []
+            for (let i = 0; i < 150; i++) {
+                const angle = Math.random() * Math.PI * 2
+                const speed = 4 + Math.random() * 10
+                pieces.push({
+                    x: originX,
+                    y: originY,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed - 6,
+                    w: 6 + Math.random() * 6,
+                    h: 3 + Math.random() * 5,
+                    rotation: Math.random() * Math.PI * 2,
+                    spin: (Math.random() - 0.5) * 0.4,
+                    wobble: Math.random() * Math.PI * 2,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                })
+            }
+
+            const duration = 4000
+            const start = performance.now()
+
+            function frame(now) {
+                const elapsed = now - start
+                ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
+                ctx.globalAlpha = Math.max(0, 1 - Math.max(0, elapsed - duration * 0.6) / (duration * 0.4))
+
+                for (const p of pieces) {
+                    p.vx *= 0.98
+                    p.vy = p.vy * 0.98 + 0.3
+                    p.wobble += 0.1
+                    p.x += p.vx + Math.sin(p.wobble)
+                    p.y += p.vy
+                    p.rotation += p.spin
+
+                    ctx.save()
+                    ctx.translate(p.x, p.y)
+                    ctx.rotate(p.rotation)
+                    // Flip on one axis to fake a 3D tumble
+                    ctx.scale(1, Math.cos(p.wobble))
+                    ctx.fillStyle = p.color
+                    ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h)
+                    ctx.restore()
+                }
+
+                if (elapsed < duration) {
+                    requestAnimationFrame(frame)
+                } else {
+                    canvas.remove()
+                }
+            }
+
+            requestAnimationFrame(frame)
+        }
+      {% endif %}
+
       function all_long_running() {
           get_fling()
           get_lunch()
@@ -246,6 +321,10 @@
 
               gradeModal.show()
           }
+
+          {% if cake %}
+            $(".cake").css("cursor", "pointer").on("click", confetti)
+          {% endif %}
       })
   </script>
 
@@ -466,7 +545,13 @@
               <span id="weekday"></span>,
               <span id="month"></span>
               <span id="day"></span>
+              {% if cake %}
+                <span class="cake">🎂</span>
+              {% endif %}
             </h1>
+            {% if cake %}
+                <h4 id="cake_message" style="display: none">Happy Birthday Tr. Canora!!</h4>
+            {% endif %}
             <h1 id="time" class="time">
               <span id="hour"></span>:<span id="minute"></span><span style="color: #808080">:<span
                     id="second"></span></span>

@@ -43,8 +43,11 @@ def dashboard(request):
         ai_enabled_beta, _ = FeatureFlag.objects.get_or_create(name="ai_enabled_for_beta")
         ai_beta = BetaUser.objects.filter(canvas_id=request.session.get('canvas_uid', -1), ai=True).exists()
 
+        now = timezone.now().astimezone(settings.EST)
+
         cq = CountdownEvent.objects.filter(grade=grade) | CountdownEvent.objects.filter(all_grades=True)
-        countdown = cq.exclude(time__lt=timezone.now()).order_by('time').first()
+        countdown = cq.exclude(time__lt=now).order_by('time').first()
+        cake = now.month == 10 and now.day == 27
 
         sesh = dict(request.session)
         if 'access_token' in sesh:
@@ -83,11 +86,12 @@ def dashboard(request):
                 "bells": get_bell_schedule(grade),
                 "special_schedule_link": get_special_schedule_link(grade),
                 "schedule_name": get_schedule_name(grade),
-                "weekend": timezone.now().weekday() in (5, 6),
+                "weekend": now.weekday() in (5, 6),
                 "canvas_authed": True,
                 "ai_enabled": ai_enabled_authed or (ai_enabled_beta and ai_beta),
                 "sesh": sesh,
-                "countdown": countdown
+                "countdown": countdown,
+                "cake": cake,
             })
         else:
             send_custom_event(
@@ -114,7 +118,7 @@ def dashboard(request):
                 "bells": get_bell_schedule(grade),
                 "special_schedule_link": get_special_schedule_link(grade),
                 "schedule_name": get_schedule_name(grade),
-                "weekend": timezone.now().weekday() in (5, 6),
+                "weekend": now.weekday() in (5, 6),
                 "canvas_authed": False,
                 "scopes": " ".join((
                     "url:GET|/api/v1/users/self/activity_stream",
@@ -130,6 +134,7 @@ def dashboard(request):
                 "ai_enabled": ai_enabled_unauthed,
                 "sesh": sesh,
                 "countdown": countdown,
+                "cake": cake,
             })
     except:
         print(traceback.format_exc())

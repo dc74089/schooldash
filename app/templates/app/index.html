@@ -40,6 +40,29 @@
       const days = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"]
       let reloading = false;
 
+      // Eastern date (YYYY-MM-DD) the server rendered this page for
+      const renderDate = "{{ render_date }}";
+      const easternDate = new Intl.DateTimeFormat("en-CA", {
+          timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit"
+      });
+
+      function reloadIfNewDay() {
+          if (reloading || easternDate.format(new Date()) <= renderDate) {
+              return
+          }
+
+          // If the device clock runs ahead of the server, the reload can come back with
+          // yesterday's page; throttle so that retries once a minute instead of looping.
+          const last = Number(sessionStorage.getItem("dayReloadAt") || 0)
+          if (Date.now() - last < 1000 * 60) {
+              return
+          }
+
+          reloading = true;
+          sessionStorage.setItem("dayReloadAt", Date.now())
+          location.reload()
+      }
+
       function updateTime() {
           var date = new Date();
           let hours = date.getHours();
@@ -312,6 +335,9 @@
           setInterval(function () {
               updateTime()
           }, 100);
+
+          setInterval(reloadIfNewDay, 1000 * 10);
+          document.addEventListener("visibilitychange", reloadIfNewDay);
 
           if ({{ grade }} == 0) {
               const gradeModal = new bootstrap.Modal('#gradeModal', {

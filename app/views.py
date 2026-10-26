@@ -92,6 +92,7 @@ def dashboard(request):
                 "sesh": sesh,
                 "countdown": countdown,
                 "cake": cake,
+                "render_date": now.date().isoformat(),
             })
         else:
             send_custom_event(
@@ -135,6 +136,7 @@ def dashboard(request):
                 "sesh": sesh,
                 "countdown": countdown,
                 "cake": cake,
+                "render_date": now.date().isoformat(),
             })
     except:
         print(traceback.format_exc())

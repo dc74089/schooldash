@@ -48,7 +48,7 @@ class ScheduleOverride(models.Model):
     date = models.DateField()
     schedule = models.CharField(max_length=20, choices=schedules)
     schedule_link = models.TextField(null=True, blank=True)
-    school = models.CharField(max_length=5, null=False, blank=False, default="MS", choices=(("MS", "Middle School"), ("HS", "Upper School")))
+    school = models.CharField(max_length=5, null=False, blank=False, default="MS", choices=(("MS", "Middle School"), ("US", "Upper School")))
 
     class Meta:
         ordering = ['-date']

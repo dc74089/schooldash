@@ -317,8 +317,6 @@ def get_schedule_name(grade):
 
     soq = ScheduleOverride.objects.filter(school=school, date=timezone.now().astimezone(settings.EST).date())
 
-    school = "MS" if grade in (7, 8) else "US"
-
     if soq.exists():
         override: ScheduleOverride = soq.first()
 
